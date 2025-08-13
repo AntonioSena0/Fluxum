@@ -4,28 +4,28 @@ import Fluxum from "./assets/fluxum.svg";
 function App() {
   return (
     <div className="bg-white flex flex-col w-full h-full">
-      <div className="bg-white flex w-1778 h-87 m-auto mt-14 rounded-2xl py-4 px-4">
-        <img src={Fluxum} alt="" className="ml-8" />
+      <div className="bg-black flex w-5/6 h-24 m-auto mt-14 rounded-2xl py-4 px-4">
+        <img src={Fluxum} alt="" className="m-0" />
 
-        <div className="bg-slate-100 flex ml-32 rounded-full w-[840px] h-[58px]">
-          <div className="w-[181px] h-[58px] rounded-full flex justify-center items-center bg-indigo-500 text-x1 text-white shadow-[5px_0_10px_0_rgba(91,97,179,0.4)]">
+        <div className="bg-slate-100 flex ml-32 rounded-full w-3/5 h-16">
+          <div className="w-1/5  rounded-full flex justify-center items-center bg-indigo-500 text-x1 text-white shadow-[5px_0_10px_0_rgba(91,97,179,0.4)]">
             Início
           </div>
-          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center ml-8">
+          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center mx-8">
             Dashboard
           </div>
-          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center ml-16">
+          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center mx-8">
             Alertas
           </div>
-          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center ml-16">
+          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center mx-8">
             Mapas
           </div>
-          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center ml-16">
+          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center mx-8">
             Relatórios
           </div>
         </div>
 
-        <div className="w-[181px] h-[54px] font-medium flex justify-center items-center text-xl text-indigo-700 ml-44">
+        <div className="w-1/6 h-[54px] font-medium flex justify-center items-center text-xl text-indigo-700 ml-44 bg-white">
           Cadastre-se
         </div>
 
