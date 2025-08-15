@@ -188,9 +188,27 @@ const App = () => {
         </div>
       </div>
 
-
-          
-
+      <div className="w-11/12 h-96 bg-purple-50 border-stone-100 rounded-2xl mx-auto mt-8 flex relative flex-col shadow-[0px_0px_15px_3px_rgba(25,27,64,0.1)]">
+        <div className="w-5/12 h-8 bg-white text-sm flex justify-center items-center rounded-md text-indigo-500 mx-auto mt-12 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.1)]">
+          Controle o Fluxo
+        </div>
+        <div className="w-11/12 h-22 text-lg justify-center items-center text-center font-bold mx-auto mt-8 text-slate-950">
+          Explore Dados em Fluxo e Monitore o Essencial em Tempo Real.
+        </div>
+        <div className="w-11/12 h-22 text-xs justify-center items-center text-center font-base mx-auto mt-3 text-slate-950">
+          Visualize, analise e tome decisões com base em dados reais, utilizando
+          o sistema inteligente, Fluxum.
+        </div>
+        <div className="flex justify-between w-4/6 mx-auto mt-8">
+          <div className="w-5/12 h-8 bg-indigo-500 text-white flex justify-center items-center rounded-lg">
+            Iniciar
+          </div>
+          <div className="w-5/12 h-8 bg-white flex justify-center items-center rounded-lg text-indigo-500 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.1)]">
+            Explorar
+          </div>
+        </div>
+        <div className="w-full h-96 z-80 bg-indigo-500 rounded-2xl mx-auto mt-8 flex absolute top-72 border-4 border-indigo-500 flex-col left-1/2 -translate-x-1/2"></div>
+      </div>
     </div>
   );
 };
