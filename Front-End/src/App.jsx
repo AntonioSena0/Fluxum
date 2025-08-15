@@ -1,46 +1,198 @@
 import { useState } from "react";
 import Fluxum from "./assets/fluxum.svg";
+import Relogio from "./assets/clock-3 1.svg";
+import DashBoard from "./assets/box 1 (1).svg";
+import Logo from "./assets/logo.svg";
+import Mapa from "./assets/map 1.svg";
+import Home from "./assets/house 1.svg";
+import Aletrtas from "./assets/flag 1.svg";
+import Relatorio from "./assets/chart-pie 1.svg";
 
-function App() {
+import { Link } from "react-router-dom";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+/* import all the icons in Free Solid, Free Regular, and Brands styles */
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+
+library.add(fas, far, fab);
+
+// Ícones simples para o botão de abrir e fechar
+const MenuIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-6 w-6"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M4 6h16M4 12h16M4 18h16"
+    />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-6 w-6"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 18L18 6M6 6l12 12"
+    />
+  </svg>
+);
+
+const App = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleMenuToggle = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
-    <div className="bg-white flex flex-col w-full h-full">
-      <div className="bg-black flex w-5/6 h-24 m-auto mt-14 rounded-2xl py-4 px-4">
-        <img src={Fluxum} alt="" className="m-0" />
+    <div className="relative">
+      {/* Container principal da Nav-bar para desktop */}
+      <div className="w-full bg-white md:hidden h-20 flex justify-between items-center">
+        {/* Botão do menu para mobile, agora à esquerda */}
+        <div className="md:hidden ml-4">
+          <button onClick={handleMenuToggle} className="p-2 text-indigo-500">
+            {menuOpen ? <CloseIcon /> : <MenuIcon />}
+          </button>
+        </div>
 
-        <div className="bg-slate-100 flex ml-32 rounded-full w-3/5 h-16">
-          <div className="w-1/5  rounded-full flex justify-center items-center bg-indigo-500 text-x1 text-white shadow-[5px_0_10px_0_rgba(91,97,179,0.4)]">
+        {/* Logo, agora à direita */}
+        <img className="mr-6" src={Logo} alt="Logo" />
+      </div>
+
+      <div
+        className="bg-white hidden md:flex w-full h-24 m-auto mt-14 justify-around rounded-2xl py-4 px-6
+      md:w-full md:mx-0 md:justify-between md:text-sm
+      2xl:w-5/6 2xl:mx-auto"
+      >
+        <div className="flex bg-white  md:w-8/12 justify-around">
+          <img src={Logo} alt="" className="m-0" />
+
+          <div
+            className="bg-slate-100 flex rounded-full w-5/6 h-16
+        md:overflow-x-hidden"
+          >
+            <div className="w-1/6  rounded-full flex justify-center items-center bg-indigo-500 text-white shadow-[5px_0_10px_0_rgba(91,97,179,0.4)] lg:text-lg">
+              Início
+            </div>
+            <div className=" hover:text-indigo-300 transition-all duration-500 font-medium text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+              Dashboard
+            </div>
+            <div className="hover:text-indigo-300 transition-all duration-500 font-medium text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+              Alertas
+            </div>
+            <div className="hover:text-indigo-300 transition-all duration-500 font-medium text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+              Mapas
+            </div>
+            <div className="hover:text-indigo-300 transition-all duration-500 font-medium text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+              Relatórios
+            </div>
+          </div>
+        </div>
+        <div className="bg-white w-3/12 flex h-[54px] justify-between my-auto xl:w-4/12 2xl:w-3/12">
+          <div className="hover:text-indigo-300 transition-all duration-500 w-6/12 h-[54px] font-medium text-xs flex justify-center items-center text-indigo-700 bg-white lg:mr-2 lg:text-lg xl:text-xl 2xl:mr-4">
+            Cadastre-se
+          </div>
+
+          <div className="hover:text-indigo-500 transition-all duration-500 hover:bg-white hover:border-2 hover:border-indigo-500 border-indigo-500 border-2 bg-indigo-500 w-6/12 h-[54px] font-medium flex justify-center items-center text-white rounded-2xl lg:text-lg xl:text-xl">
+            Login
+          </div>
+        </div>
+      </div>
+
+      {menuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-20 z-40 transition-opacity duration-300"
+          onClick={handleMenuToggle}
+        ></div>
+      )}
+
+      {/* Menu para mobile que desliza da esquerda */}
+      <div
+        className={`
+          md:hidden fixed top-0 left-0 h-screen w-7/12 bg-white border-indigo-400 text-white rounded-e-50 z-50
+          transform transition-transform duration-300 ease-in-out
+          ${menuOpen ? "translate-x-0 " : "-translate-x-full "}
+          ${
+            menuOpen
+              ? "shadow-[0_-5px_20px_0_rgba(0,0,0,0.1),_5px_0_10px_0_rgba(0,0,0,0.1),_0_5px_20px_0_rgba(91,97,179,0.1)]"
+              : ""
+          }
+        `}
+      >
+        <div className="flex w-5/6 mx-auto justify-center py-6 mt-4 bg-white border-b-2 border-indigo-400">
+          <div className=" text-2xl text-indigo-500 font-bold flex items-center justify-center">
+            FLUXUM
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-y-6 mt-10 items-center ">
+          <a
+            href="#"
+            className=" bg-indigo-500 py-2 rounded-lg flex ml-4 w-5/6 text-medium text-white font-semibold items-center relative"
+          >
+            <img src={Home} className="w-1/6 ml-3 mr-4 text-white" alt="" />
             Início
-          </div>
-          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center mx-8">
+          </a>
+          <a
+            href="#"
+            className="bg-white py-3 flex ml-4 w-5/6 text-medium text-indigo-400 font-semibold items-center"
+          >
+            <img src={DashBoard} className="w-1/6 mr-4 ml-3" alt="" />
             Dashboard
-          </div>
-          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center mx-8">
+          </a>
+          <a
+            href="#"
+            className="bg-white py-3 flex ml-4 w-5/6 text-medium text-indigo-400 font-semibold items-center"
+          >
+            <img src={Aletrtas} className="w-1/6 mr-4 ml-3" alt="" />
             Alertas
-          </div>
-          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center mx-8">
+          </a>
+          <a
+            href="#"
+            className="bg-white py-3 flex ml-4 w-5/6 text-medium text-indigo-400 font-semibold items-center"
+          >
+            <img src={Mapa} className="w-1/6 mr-4 ml-3" alt="" />
             Mapas
-          </div>
-          <div className="font-medium text-indigo-500 text-xl flex justify-center items-center mx-8">
+          </a>
+          <a
+            href="#"
+            className="bg-white py-3 flex ml-4 w-5/6 text-medium text-indigo-400 font-semibold items-center"
+          >
+            <img src={Relatorio} className="w-1/6 mr-4 ml-3" alt="" />
             Relatórios
-          </div>
+          </a>
         </div>
-
-        <div className="w-1/6 h-[54px] font-medium flex justify-center items-center text-xl text-indigo-700 ml-44 bg-white">
-          Cadastre-se
-        </div>
-
-        <div className="bg-indigo-500 w-[181px] h-[54px] font-medium flex justify-center items-center text-xl text-white ml-8 rounded-2xl">
+        <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-md text-xl left-1/2 -translate-x-1/2 font-semibold">
           Login
         </div>
+        <div className="bg-white w-5/6 mx-auto h-10 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-md text-xl font-semibold">
+          Cadastrar-se
+        </div>
       </div>
 
-      <div className="bg-purple-50 border-stone-100 border-4 w-[1670px] h-[930px] mx-auto p-4 mt-32 rounded-[50px] mb-32 flex relative">
 
-    <div className="min-w-8 min-h-8 rounded-full absolute top-16 bg-violet-500 left-56"></div>
+          
 
-      </div>
     </div>
   );
-}
+};
 
 export default App;
