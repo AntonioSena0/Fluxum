@@ -11,6 +11,7 @@ import Celular from "./assets/CelularH.svg";
 import NotRisco from "./assets/NotRisco.svg";
 import F6 from "./assets/Frame 6.svg";
 import F7 from "./assets/Frame 7.svg";
+import F8 from "./assets/Frame 8.svg";
 
 import { Link } from "react-router-dom";
 
@@ -140,7 +141,7 @@ const App = () => {
       {/* Menu para mobile que desliza da esquerda */}
       <div
         className={`
-          md:hidden fixed top-0 left-0 h-svh overflow-y-auto w-7/12 bg-purple-50 text-white rounded-e-50 z-50
+          md:hidden fixed top-0 left-0 h-svh overflow-y-auto w-7/12 bg-purple-50 text-white rounded-e-3xl z-50
           transform transition-transform duration-300 ease-in-out
           ${menuOpen ? "translate-x-0 " : "-translate-x-full "}
           ${
@@ -152,80 +153,87 @@ const App = () => {
       >
         <div className="flex w-5/6 mx-auto justify-center py-6 mt-4 bg-purple-50 border-b-2 border-indigo-400">
           <div className=" text-2xl text-indigo-500 font-bold flex items-center justify-center">
-            FLUXUM
+            <img src={Logo} alt="" />
           </div>
         </div>
 
-        <div className="flex flex-col gap-y-6 mt-10 items-center ">
+        <div className="flex flex-col gap-y-6 mt-10 items-start ">
           <a
             href="#"
-            className=" bg-indigo-500 py-2 rounded-lg flex ml-4 w-5/6 text-medium text-white font-semibold items-center relative"
+            className=" bg-indigo-500 py-2 rounded-e-lg flex w-5/6 font-normal text-lg text-white items-center relative"
           >
             <img src={Home} className="w-1/6 ml-3 mr-4 text-white" alt="" />
             Início
           </a>
           <a
             href="#"
-            className="bg-purple-50 py-3 flex ml-4 w-5/6 text-medium text-indigo-400 font-semibold items-center"
+            className="bg-purple-50 py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
             <img src={DashBoard} className="w-1/6 mr-4 ml-3" alt="" />
             Dashboard
           </a>
           <a
             href="#"
-            className="bg-purple-50 py-3 flex ml-4 w-5/6 text-medium text-indigo-400 font-semibold items-center"
+            className="bg-purple-50 py-2 rounded-e-lg flex w-5/6 text-lg text-indigo-500 font-normal items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
             <img src={Aletrtas} className="w-1/6 mr-4 ml-3" alt="" />
             Alertas
           </a>
           <a
             href="#"
-            className="bg-purple-50 py-3 flex ml-4 w-5/6 text-medium text-indigo-400 font-semibold items-center"
+            className="bg-purple-50 py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
             <img src={Mapa} className="w-1/6 mr-4 ml-3" alt="" />
             Mapas
           </a>
           <a
             href="#"
-            className="bg-purple-50 py-3 flex ml-4 w-5/6 text-medium text-indigo-400 font-semibold items-center"
+            className="bg-purple-50 py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal items-center text-lg hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
             <img src={Relatorio} className="w-1/6 mr-4 ml-3" alt="" />
             Relatórios
           </a>
         </div>
-        <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-md text-xl left-1/2 -translate-x-1/2 font-semibold">
+        <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-xl text-xl left-1/2 -translate-x-1/2 border-2 font-semibold hover:bg-purple-50 hover:text-indigo-500 hover:border-indigo-500 transition-all duration-700">
           Login
         </div>
-        <div className="bg-purple-50 w-5/6 mx-auto h-10 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-md text-xl font-semibold">
+        <div className="bg-purple-50 w-5/6 mx-auto h-12 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-xl text-xl font-semibold border-2 border-purple-50 hover:border-indigo-500 transition-all duration-700">
           Cadastrar-se
         </div>
       </div>
 
-      <div className="h-[672px] w-full flex flex-col mb-96 sm:h-[800px] md:h[1200px]">
+      <div className="h-[672px] w-full flex flex-col mb-96 sm:h-[800px] md:h-[840px] md:mt-20">
         <div
           className="w-11/12 h-1/2 bg-purple-50 border-stone-100 rounded-2xl mx-auto flex flex-col shadow-[0px_0px_10px_6px_rgba(25,27,64,0.1)]
-        sm:min-h-96"
+        sm:min-h-96
+        md:min-h-[420px]"
         >
           <div
             className="w-5/12 h-8 bg-white text-sm flex justify-center items-center rounded-md text-indigo-500 mx-auto mt-12 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.1)]
-          sm:w-4/12 sm:h-9"
+          sm:w-4/12 sm:h-9
+          md:w-3/12"
           >
             Controle o Fluxo
           </div>
           <div
             className="w-11/12 h-22 text-lg justify-center items-center text-center font-bold mx-auto mt-8 text-slate-950
-          sm:text-2xl"
+          sm:text-2xl
+          md:text-3xl"
           >
             Explore Dados em Fluxo e Monitore o Essencial em Tempo Real.
           </div>
           <div
             className="w-11/12 h-22 text-xs justify-center items-center text-center font-base mx-auto mt-3 text-slate-950
-          sm:text-sm"
+          sm:text-sm
+          md:text-base md:mt-8"
           >
             Visualize, analise e tome decisões com base em dados reais,
             utilizando o sistema inteligente, Fluxum.
           </div>
-          <div className="flex justify-between w-4/6 mx-auto mt-8">
+          <div
+            className="flex justify-between w-4/6 mx-auto mt-8
+          md:w-1/2"
+          >
             <div
               className="w-5/12 h-8 bg-indigo-500 text-white flex justify-center items-center rounded-lg
             sm:h-9"
@@ -242,41 +250,77 @@ const App = () => {
         </div>
         <div className="w-11/12 h-7/12 z-80 bg-indigo-500 rounded-2xl mx-auto flex justify-between border-4 border-indigo-500 -mt-6 md:min-h-[440px]">
           <div className="flex flex-col bg-read-600 w-3/6 min-h-full justify-between">
-            <div className="flex flex-col mt-10 ml-2
-             sm:my-auto sm:h-5/6">
+            <div
+              className="flex flex-col mt-10 ml-2
+             sm:my-auto sm:h-5/6"
+            >
               <div
                 className="text-xs font-light text-white
-              sm:text-sm"
+              sm:text-sm
+              md:text-base"
               >
                 O que é o Fluxum?
               </div>
               <div
                 className="text-sm mt-2 font-bold text-white
-              sm:text-base"
+              sm:text-base
+              md:text-xl md:mr-8"
               >
                 O Sistema Inteligente de Monitoramento Portuário com IoT e
                 Computação em Nuvem
               </div>
-              <div className="hidden sm:flex text-xs font-light text-white mt-8">
+              <div
+                className="hidden sm:flex text-xs font-light text-white mt-8
+              md:text-sm"
+              >
                 Fluxum é uma plataforma inteligente de monitoramento portuário,
                 desenvolvida para rastrear cointâineres em tempo real, emitir
                 alertas automáticos e transformar dados brutos em decisões
                 estratégicas.
               </div>
-              <div className="hidden sm:flex text-xs font-light text-white mt-3">
+              <div
+                className="hidden sm:flex text-xs font-light text-white mt-3
+              md:text-sm"
+              >
                 Integrando sensores IoT e computação em nuvem, o sistema oferece
                 uma visão clara, precisa e atualizada da logística no ambiente
                 portuário - tudo em um único dashboard.
               </div>
-              <div className="hidden sm:flex text-xs font-light text-white mt-3">Com o Fluxum, portos se tornam mais eficientes, seguros e conectados.</div>
+              <div
+                className="hidden sm:flex text-xs font-light text-white mt-3
+              md:text-sm"
+              >
+                Com o Fluxum, portos se tornam mais eficientes, seguros e
+                conectados.
+              </div>
             </div>
             <img src={NotRisco} className="ml-2 mb-0.3 sm:hidden" alt="" />
           </div>
           <div className="flex my-auto w-5/12 mr-2 h-full md:h-5/6 md-lg:h-full md:-rotate-[25deg]">
-            <img src={Celular} alt="" className="w-full rounded-[20px] mx-auto my-auto md:w-auto  md:h-full shadow-2xl" />
-            <div className="flex flex-col justify-start h-1/2 ">
-            <img src={NotRisco} className="hidden rounded-20 md:flex md:w-auto md:h-auto md:min-w-40 md:mt-1 md:ml-2 md-lg:min-w-44 shadow-2xl" alt="" />
-            <img src={F6} alt="" className="hidden rounded-20 md:flex w-full mx-auto my-auto md:w-auto md:h-auto md:mt-6 md:ml-2 shadow-2xl" />
+            <img
+              src={Celular}
+              alt=""
+              className="w-full rounded-[20px] mx-auto my-auto md:w-auto  md:h-full shadow-black/55 shadow-2xl"
+            />
+            <div
+              className="flex flex-col justify-around h-1/2 bg-ared-600
+            lg:h-4/5"
+            >
+              <img
+                src={NotRisco}
+                className="hidden rounded-md md:flex md:w-auto md:h-auto md:min-w-40 md:mt-1 md:ml-2 md-lg:min-w-44 shadow-black/70 shadow-2xl"
+                alt=""
+              />
+              <img
+                src={F6}
+                alt=""
+                className="hidden rounded-lg md:flex w-full mx-auto my-auto md:w-auto md:h-auto md:mt-6 md:ml-2 shadow-black/70 shadow-2xl"
+              />
+              <img
+                src={F8}
+                alt=""
+                className="hidden rounded-xl lg:flex mx-auto my-auto w-fulal h-1/6 ml-2 shadow-black/70 shadow-2xl -mt-14"
+              />
             </div>
           </div>
         </div>
