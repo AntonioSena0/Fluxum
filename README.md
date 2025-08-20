@@ -6,45 +6,62 @@
 
 # Fluxum - Dashboard Inteligente com Computação em Nuvem para Movimentação de Contâineres
 
-> Fluxum é uma plataforma de gamificação projetada para aumentar a produtividade e o engajamento em ambientes de trabalho ou estudo.
+> **Fluxum** é um dashboard inteligente que integra IoT e computação em nuvem para monitorar movimentações logísticas de contêineres em tempo real.
 
 <br>
 <br>
 
 ## O que é o Fluxum?
 
-O **Fluxum** é um projeto de gamificação criado para tornar a jornada acadêmica, envolvente e motivadora.
-Através de **missões**, **desafios** e **rankings**, incentivamos os usuários a se dedicarem ainda mais aos estudos, transformando tarefas do dia a dia em experiências dinâmicas e recompensadoras.
-No Xarc, cada atividade realizada gera pontos que podem ser acompanhados em um ranking geral. Empresas podem reconhecer seu esforço ao analisar seu perfil através do *Ranking Global* ou *Diário*, que apresenta os usuários destaques.
+O **Fluxum** é uma plataforma projetada para **monitorar, analisar e otimizar a movimentação de contêineres**.  
+Seu objetivo é oferecer um **dashboard inteligente**, com informações claras e dinâmicas que permitem:
+
+- Monitoramento em **tempo real** via IoT.  
+- Relatórios detalhados sobre movimentações.  
+- Alertas automáticos em situações críticas.  
+- Visualização em **mapas interativos**.  
 
 
 <br>
 
 ## Estrutura do Projeto
 
-- **backend/**: API construída com Node.js, Fastify e PostgreSQL.
-- **frontend/**: Interface de usuário desenvolvida com HTML, CSS e JavaScript.
-- **database/**: Scripts SQL para criação e população do banco de dados.
-- **docs/**: Documentação do projeto.
+- **Back-End/**: API construída com Node.js, Express e PostgreSQL.
+- **Front-End/**: Interface de usuário desenvolvida com React e Tailwind CSS.
+- **Database/**: Scripts SQL para criação e população do banco de dados.
+- **Protótipo/**: Protótipo fisíco e digital da IoT.
+- **Documentação/**: Documentação do projeto.
+- **Protótipo/**: Protótipo fisíco e digital da IoT.
 
 <br>
 <br>
 
 **Tecnologias e Frameworks (Front-End):**
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) &nbsp;
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![React](https://img.shields.io/badge/React-9F9CE8?style=for-the-badge&logo=react&logoColor=FFFFFF) &nbsp;
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-5B61B3?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
 <br>
 <br>
 
 **Linguagens, Frameworks e Bibliotecas (Back-End):**
 
-![Node.js](https://img.shields.io/badge/Node.js-0D1F67?style=for-the-badge&logo=node.js&logoColor=white) &nbsp;
-![Express](https://img.shields.io/badge/Express-6d2afe?style=for-the-badge&logo=fastify&logoColor=white) &nbsp;
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-0D1F67?style=for-the-badge&logo=postgresql&logoColor=white) &nbsp;
-![JWT](https://img.shields.io/badge/JWT-6d2afe?style=for-the-badge&logo=jsonwebtokens&logoColor=white) &nbsp;
-![Env](https://img.shields.io/badge/.env-0D1F67?style=for-the-badge&logo=none&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-5B61B3?style=for-the-badge&logo=node.js&logoColor=white) &nbsp;
+![Express](https://img.shields.io/badge/Express-9F9CE8?style=for-the-badge&logo=fastify&logoColor=white) &nbsp;
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-5B61B3?style=for-the-badge&logo=postgresql&logoColor=white) &nbsp;
+![JWT](https://img.shields.io/badge/JWT-9F9CE8?style=for-the-badge&logo=jsonwebtokens&logoColor=white) &nbsp;
+![Env](https://img.shields.io/badge/.env-5B61B3?style=for-the-badge&logo=none&logoColor=white)
+
+<br>
+<br>
+
+## Funcionalidades Principais
+
+-  **Dashboard** com indicadores de movimentação.  
+-  **Mapas interativos** para rotas de contêineres.  
+-  **Alertas automáticos** em caso de falhas ou anomalias.  
+-  **Relatórios exportáveis** para análise detalhada.  
+-  **Área de perfil** para gerenciamento do usuário.
 
 <br>
 <br>
