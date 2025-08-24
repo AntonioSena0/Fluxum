@@ -8,7 +8,15 @@ const { query } = require('../database/db');
 const { loginValidator, registerValidator } = require('../validators/users.validators');
 const { validationResult } = require('express-validator');
 
+
+
 const router = express.Router();
+
+const { sendPasswordReset } = require('../services/mailer');
+
+const RESET_EXPIRES_MIN = parseInt(process.env.RESET_EXPIRES_MIN || '30', 10);
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES || '15m';
@@ -22,10 +30,11 @@ function refreshCookieOpts() {
   const isProd = process.env.NODE_ENV === 'production';
   return {
     httpOnly: true,
-    secure: isProd, // HTTPS em prod
+    secure: isProd,
     sameSite: 'lax',
     path: '/auth',
     maxAge: REFRESH_EXPIRES_DAYS * 24 * 60 * 60 * 1000
+    
   };
 }
 
@@ -101,6 +110,109 @@ router.post('/login', loginValidator, async (req, res) => {
   delete user.password_hash;
   return res.json({ user, accessToken, refreshToken });
 });
+
+router.post('/forgot-password', async (req, res) => {
+  const email = String(req.body?.email || '').trim().toLowerCase();
+  const okResp = () => res.status(202).json({ message: 'Se o e-mail existir, enviaremos instruções.' });
+  if (!email) return okResp();
+
+  try {
+    const u = await query('SELECT id, name, email FROM users WHERE email=$1 LIMIT 1', [email]);
+    if (u.rowCount === 0) return okResp();
+    const user = u.rows[0];
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const expiresAt = new Date(Date.now() + RESET_EXPIRES_MIN * 60 * 1000);
+
+    await query(
+      `INSERT INTO password_resets (user_id, token_hash, expires_at, ip, user_agent)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [user.id, tokenHash, expiresAt, req.ip, req.headers['user-agent'] || null]
+    );
+
+    const link = `${FRONTEND_URL}/reset-password?token=${encodeURIComponent(token)}`;
+
+    try {
+      await sendPasswordReset(user.email, user.name, link);
+    } catch (e) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[DEV] Link de reset:', link);
+      } else {
+        console.error('Falha ao enviar e-mail de reset', e);
+      }
+    }
+
+    return okResp();
+  } catch (e) {
+    req.log?.error?.(e, 'forgot-password error');
+    return okResp();
+  }
+});
+
+
+router.post('/reset-password', async (req, res) => {
+  const token = String(req.body?.token || '');
+  const newPassword = String(req.body?.password || '');
+  const confirm = req.body?.confirmPassword != null ? String(req.body.confirmPassword) : null;
+
+  if (!token || newPassword.length < 6) {
+    return res.status(400).json({ error: 'Token inválido e/ou senha muito curta' });
+  }
+  if (confirm !== null && confirm !== newPassword) {
+    return res.status(400).json({ error: 'As senhas não coincidem' });
+  }
+
+  const crypto = require('crypto');
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+  try {
+    const t = await query(
+      `SELECT pr.id, pr.user_id, pr.expires_at, pr.used_at
+         FROM password_resets pr
+        WHERE pr.token_hash = $1
+        LIMIT 1`,
+      [tokenHash]
+    );
+
+    if (t.rowCount === 0) return res.status(400).json({ error: 'Token inválido' });
+    const row = t.rows[0];
+
+    if (row.used_at) return res.status(400).json({ error: 'Token já utilizado' });
+    if (new Date(row.expires_at).getTime() < Date.now()) return res.status(400).json({ error: 'Token expirado' });
+
+    const password_hash = await argon2.hash(newPassword);
+
+    await query('BEGIN');
+    await query('UPDATE users SET password_hash=$1, updated_at=NOW() WHERE id=$2', [password_hash, row.user_id]);
+    await query('UPDATE refresh_tokens SET revoked_at=NOW() WHERE user_id=$1 AND revoked_at IS NULL', [row.user_id]);
+    await query('UPDATE password_resets SET used_at=NOW() WHERE id=$1', [row.id]);
+    await query('COMMIT');
+
+    return res.status(204).send();
+  } catch (e) {
+    await query('ROLLBACK').catch(() => {});
+    req.log?.error?.(e, 'reset-password error');
+    return res.status(500).json({ error: 'Erro ao redefinir senha' });
+  }
+});
+
+
+
+router.get('/reset-password/validate', async (req, res) => {
+  const token = String(req.query?.token || '');
+  if (!token) return res.status(400).json({ valid: false });
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const t = await query(
+    `SELECT expires_at, used_at FROM password_resets WHERE token_hash=$1 LIMIT 1`,
+    [tokenHash]
+  );
+  if (t.rowCount === 0) return res.json({ valid: false });
+  const row = t.rows[0];
+  const valid = !row.used_at && new Date(row.expires_at).getTime() >= Date.now();
+  return res.json({ valid });
+});
+
 
 // Refresh (rotação)
 router.post('/refresh', async (req, res) => {
