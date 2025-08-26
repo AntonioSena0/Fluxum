@@ -79,19 +79,23 @@ const App = () => {
   }, [menuOpen]);
 
   return (
+    //Começo do ódigo da Home//
+
     <div className="relative min-w-full min-h-full overflow-hidden">
       {/* Container principal da Nav-bar para desktop */}
+
+      {/* logo e botão para abrir a sidebar mobile */}
       <div className="w-full bg-white md:hidden h-20 flex justify-between items-center">
-        {/* Botão do menu para mobile, agora à esquerda */}
         <div className="md:hidden ml-4">
           <button onClick={handleMenuToggle} className="p-2 text-indigo-500">
             {menuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
         </div>
 
-        {/* Logo, agora à direita */}
         <img className="mr-6" src={Logo} alt="Logo" />
       </div>
+
+      {/*começo do código para a navbar desktop */}
 
       <div
         className="bg-white hidden md:flex w-full h-24 m-auto mt-14 justify-around rounded-2xl py-4 px-6
@@ -123,16 +127,24 @@ const App = () => {
           </div>
         </div>
         <div className="bg-white w-3/12 flex h-[54px] justify-between my-auto xl:w-4/12 2xl:w-3/12">
-          <div className="hover:text-indigo-300 transition-all duration-500 w-6/12 h-[54px] font-medium text-xs flex justify-center items-center text-indigo-700 bg-white lg:mr-2 lg:text-lg xl:text-xl 2xl:mr-4">
+          <div
+            className="hover:text-indigo-300 transition-all duration-500 w-6/12 h-[54px] font-medium text-xs flex justify-center items-center
+           text-indigo-700 bg-white lg:mr-2 lg:text-lg xl:text-xl 2xl:mr-4"
+          >
             Cadastre-se
           </div>
 
-          <div className="hover:text-indigo-500 transition-all duration-500 hover:bg-white hover:border-2 hover:border-indigo-500 border-indigo-500 border-2 bg-indigo-500 w-6/12 h-[54px] font-medium flex justify-center items-center text-white rounded-2xl lg:text-lg xl:text-xl">
+          <div
+            className="hover:text-indigo-500 transition-all duration-500 hover:bg-white hover:border-2 hover:border-indigo-500
+           border-indigo-500 border-2 bg-indigo-500 w-6/12 h-[54px] font-medium flex justify-center items-center text-white rounded-2xl lg:text-lg xl:text-xl"
+          >
             Login
           </div>
         </div>
       </div>
+      {/* Final do código da navbar desktop */}
 
+      {/* começo do código referente a sidebar mobile aberta */}
       {menuOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-20 z-40 transition-opacity duration-300"
@@ -204,7 +216,15 @@ const App = () => {
         </div>
       </div>
 
+      {/* final do código referente a sidebar mobile aberta */}
+
+
+          {/* começo do código para o primeiro container da home */}
+
       <div className="h-[672px] w-full flex flex-col mb-96 sm:h-[800px] md:h-[840px] md:mt-20 lg:h-[1180px]">
+
+
+          {/* código referente ao conteiner superior  */}
         <div
           className="w-11/12 h-1/2 bg-purple-50 border-stone-100 rounded-2xl mx-auto flex flex-col shadow-[0px_0px_10px_6px_rgba(25,27,64,0.1)]
         sm:min-h-96
@@ -268,13 +288,19 @@ const App = () => {
             </div>
           </div>
         </div>
+
+
+
+        {/* código referente ao container inferior */}
         <div
           className="w-11/12 h-7/12 z-80 bg-indigo-500 rounded-2xl mx-auto flex justify-between border-4 border-indigo-500 -mt-6 md:min-h-[440px]
         lg:min-h-[500px]
         2xl:min-h-[550px]"
         >
-          <div className="flex flex-col w-3/6 min-h-full justify-between
-          2xl:w-3/6">
+          <div
+            className="flex flex-col w-3/6 min-h-full justify-between
+          2xl:w-3/6"
+          >
             <div
               className="flex flex-col mt-10 ml-2
              sm:my-auto sm:h-5/6
@@ -372,6 +398,9 @@ const App = () => {
           </div>
         </div>
       </div>
+
+          
+
     </div>
   );
 };
