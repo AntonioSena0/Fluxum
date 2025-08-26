@@ -16,7 +16,8 @@ module.exports = {
         '20': '20px'
       },
       screens: {
-        'md-lg': '900px', // Novo breakpoint entre md e lg
+        'md-lg': '900px',
+         'xl-2xl': '1800px',
       },
     },
   },

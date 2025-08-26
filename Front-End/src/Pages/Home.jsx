@@ -13,6 +13,7 @@ import F6 from "../assets/Frame 6.svg";
 import F7 from "../assets/Frame 7.svg";
 import F8 from "../assets/Frame 8.svg";
 import F9 from "../assets/Frame 9.svg";
+import F10 from "../assets/Frame 10.svg";
 
 import { Link } from "react-router-dom";
 
@@ -78,7 +79,7 @@ const App = () => {
   }, [menuOpen]);
 
   return (
-    <div className="relative min-w-full min-h-full overflow-x-hidden">
+    <div className="relative min-w-full min-h-full overflow-hidden">
       {/* Container principal da Nav-bar para desktop */}
       <div className="w-full bg-white md:hidden h-20 flex justify-between items-center">
         {/* Botão do menu para mobile, agora à esquerda */}
@@ -208,14 +209,16 @@ const App = () => {
           className="w-11/12 h-1/2 bg-purple-50 border-stone-100 rounded-2xl mx-auto flex flex-col shadow-[0px_0px_10px_6px_rgba(25,27,64,0.1)]
         sm:min-h-96
         md:min-h-[420px]
-        lg:min-h-[680px]"
+        lg:min-h-[680px]
+        2xl:min-h-[800px]"
         >
           <div
             className="w-5/12 h-8 bg-white text-sm flex justify-center items-center rounded-md text-indigo-500 mx-auto mt-12 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.1)]
           sm:w-4/12 sm:h-9
           md:w-3/12
           lg:w-2/12 lg:mt-24
-          xl:h-10 xl:text-base"
+          xl:h-10 xl:text-base
+          2xl:text-lg"
           >
             Controle o Fluxo
           </div>
@@ -224,7 +227,8 @@ const App = () => {
           sm:text-2xl
           md:text-3xl
           lg:px-24 lg:text-4xl lg:mt-20
-          xl:text-5xl"
+          xl:text-5xl
+          2xl:px-48 2xl:text-6xl"
           >
             Explore Dados em Fluxo e Monitore o Essencial em Tempo Real.
           </div>
@@ -232,7 +236,8 @@ const App = () => {
             className="w-11/12 h-22 text-xs justify-center items-center text-center font-base mx-auto mt-3 text-slate-950
           sm:text-sm
           md:text-base md:mt-8
-          lg:text-xl lg:px-48 lg:mt-6"
+          lg:text-xl lg:px-48 lg:mt-6
+          2xl:text-2xl 2xl:px-64"
           >
             Visualize, analise e tome decisões com base em dados reais,
             utilizando o sistema inteligente, Fluxum.
@@ -240,13 +245,15 @@ const App = () => {
           <div
             className="flex justify-between w-4/6 mx-auto mt-8
           md:w-1/2
-          lg:mt-20"
+          lg:mt-20
+          2xl:mt-28 2xl:w-2/6"
           >
             <div
               className="w-5/12 h-8 bg-indigo-500 text-white flex justify-center items-center rounded-lg
             sm:h-9
             lg:h-10
-            xl:w-4/12"
+            xl:w-4/12
+            2xl:text-lg"
             >
               Iniciar
             </div>
@@ -254,7 +261,8 @@ const App = () => {
               className="w-5/12 h-8 bg-white flex justify-center items-center rounded-lg text-indigo-500 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.1)]
             sm:h-9
             lg:h-10
-            xl:w-4/12"
+            xl:w-4/12
+            2xl:text-lg"
             >
               Explorar
             </div>
@@ -262,9 +270,11 @@ const App = () => {
         </div>
         <div
           className="w-11/12 h-7/12 z-80 bg-indigo-500 rounded-2xl mx-auto flex justify-between border-4 border-indigo-500 -mt-6 md:min-h-[440px]
-        lg:min-h-[500px]"
+        lg:min-h-[500px]
+        2xl:min-h-[550px]"
         >
-          <div className="flex flex-col w-3/6 min-h-full justify-between">
+          <div className="flex flex-col w-3/6 min-h-full justify-between
+          2xl:w-3/6">
             <div
               className="flex flex-col mt-10 ml-2
              sm:my-auto sm:h-5/6
@@ -274,7 +284,8 @@ const App = () => {
                 className="text-xs font-light text-white
               sm:text-sm
               md:text-base
-              lg:text-lg"
+              lg:text-lg
+              2xl:text-xl"
               >
                 O que é o Fluxum?
               </div>
@@ -282,7 +293,8 @@ const App = () => {
                 className="text-sm mt-2 font-bold text-white
               sm:text-base
               md:text-xl md:mr-8
-              lg:text-2xl lg:mt-6"
+              lg:text-2xl lg:mt-6
+              2xl:text-3xl"
               >
                 O Sistema Inteligente de Monitoramento Portuário com IoT e
                 Computação em Nuvem
@@ -290,7 +302,8 @@ const App = () => {
               <div
                 className="hidden sm:flex text-xs font-light text-white mt-8
               md:text-sm
-              lg:pr-6"
+              lg:pr-6
+              2xl:text-base"
               >
                 Fluxum é uma plataforma inteligente de monitoramento portuário,
                 desenvolvida para rastrear cointâineres em tempo real, emitir
@@ -300,7 +313,8 @@ const App = () => {
               <div
                 className="hidden sm:flex text-xs font-light text-white mt-3
               md:text-sm
-              lg:pr-6"
+              lg:pr-6
+              2xl:text-base"
               >
                 Integrando sensores IoT e computação em nuvem, o sistema oferece
                 uma visão clara, precisa e atualizada da logística no ambiente
@@ -309,7 +323,8 @@ const App = () => {
               <div
                 className="hidden sm:flex text-xs font-light text-white mt-3
               md:text-sm
-              lg:pr-6"
+              lg:pr-6
+              2xl:text-base"
               >
                 Com o Fluxum, portos se tornam mais eficientes, seguros e
                 conectados.
@@ -319,7 +334,8 @@ const App = () => {
           </div>
           <div
             className="flex my-auto w-5/12 mr-2 h-full md:h-5/6 md-lg:h-full md:-rotate-[25deg] 
-          xl:ml-0 xl:mr-0"
+          xl:ml-0 xl:mr-0
+          a2xla:mr-16 2xl:-mat-6"
           >
             <img
               src={Celular}
