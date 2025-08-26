@@ -195,7 +195,9 @@ const App = () => {
           </a>
         </div>
         <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-xl text-xl left-1/2 -translate-x-1/2 border-2 font-semibold hover:bg-purple-50 hover:text-indigo-500 hover:border-indigo-500 transition-all duration-700">
+          
           Login
+
         </div>
         <div className="bg-purple-50 w-5/6 mx-auto h-12 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-xl text-xl font-semibold border-2 border-purple-50 hover:border-indigo-500 transition-all duration-700">
           Cadastrar-se
