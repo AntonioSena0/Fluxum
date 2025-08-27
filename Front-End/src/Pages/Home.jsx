@@ -161,10 +161,9 @@ const App = () => {
           md:hidden fixed top-0 left-0 h-svh overflow-y-auto w-7/12 bg-purple-50 text-white rounded-e-3xl z-50
           transform transition-transform duration-300 ease-in-out
           ${menuOpen ? "translate-x-0 " : "-translate-x-full "}
-          ${
-            menuOpen
-              ? "shadow-[0_-5px_20px_0_rgba(0,0,0,0.1),_5px_0_10px_0_rgba(0,0,0,0.1),_0_5px_20px_0_rgba(91,97,179,0.1)]"
-              : ""
+          ${menuOpen
+            ? "shadow-[0_-5px_20px_0_rgba(0,0,0,0.1),_5px_0_10px_0_rgba(0,0,0,0.1),_0_5px_20px_0_rgba(91,97,179,0.1)]"
+            : ""
           }
         `}
       >
@@ -400,7 +399,7 @@ const App = () => {
       {/* começo do código referente as caixas de informações */}
 
       <div
-        className="w-11/12 bga-red-900 flex flex-col mx-auto mb-96 bag-yellow-600 mt-6
+        className="w-11/12 bga-red-900 flex flex-col mx-auto bag-yellow-600 mt-6
           sm:mt-20
           xl:flex-row xl:justify-between xl:mt-36"
       >
@@ -495,7 +494,63 @@ const App = () => {
         </div>
       </div>
 
-<div className="flex">aaaa</div>
+      {/* Começo do container de dúvidas frequentes */}
+
+      <div className="w-full h-[860px] bg-aared-700 mt-12 mb-96 flex flex-col">
+
+        <div
+          className="w-5/12 h-8 bg-white text-sm flex justify-center mt-4 items-center rounded-md text-indigo-500 mx-auto shadow-[0px_0px_5px_4px_rgba(25,27,64,0.1)]
+          sm:w-4/12 sm:h-9
+          md:w-3/12
+          lg:w-2/12
+          xl:h-10 xl:text-base
+          2xl:text-lg"
+        >
+          Perguntas Frenquentes
+        </div>
+
+        <div className="flex w-10/12 bga-yellow-500 mt-16 text-3xl ml-4 font-bold text-slate-700">Principais Perguntas Frequentes</div>
+
+          <div className="flex flex-col w-full mt-8">
+            <div className="w-10/12 h-24 mx-auto mt-8 rounded-xl border-2 border-gray-300 bg-white">
+            <div className="flex w-full h-full justify-between">
+              <div className="my-auto ml-2 font-bold text-slate-700">Preciso de conexão a internet</div>
+              <div className="my-auto mr-8 text-2xl font-bold">+</div>
+            </div>
+            </div>
+
+                        <div className="w-10/12 h-24 mx-auto mt-8 rounded-xl border-2 border-gray-300 bg-white">
+            <div className="flex w-full h-full justify-between">
+              <div className="my-auto ml-2 font-bold text-slate-700">Preciso de conexão a internet</div>
+              <div className="my-auto mr-8 text-2xl font-bold">+</div>
+            </div>
+            </div>
+
+                        <div className="w-10/12 h-24 mx-auto mt-8 rounded-xl border-2 border-gray-300 bg-white">
+            <div className="flex w-full h-full justify-between">
+              <div className="my-auto ml-2 font-bold text-slate-700">Preciso de conexão a internet</div>
+              <div className="my-auto mr-8 text-2xl font-bold">+</div>
+            </div>
+            </div>
+
+                        <div className="w-10/12 h-24 mx-auto mt-8 rounded-xl border-2 border-gray-300 bg-white">
+            <div className="flex w-full h-full justify-between">
+              <div className="my-auto ml-2 font-bold text-slate-700">Preciso de conexão a internet</div>
+              <div className="my-auto mr-8 text-2xl font-bold">+</div>
+            </div>
+            </div>
+
+                        <div className="w-10/12 h-24 mx-auto mt-8 rounded-xl border-2 border-gray-300 bg-white">
+            <div className="flex w-full h-full justify-between">
+              <div className="my-auto ml-2 font-bold text-slate-700">Preciso de conexão a internet</div>
+              <div className="my-auto mr-8 text-2xl font-bold">+</div>
+            </div>
+            </div>
+
+            
+          </div>
+
+      </div>
 
     </div>
   );
