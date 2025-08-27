@@ -223,7 +223,7 @@ const App = () => {
 
       {/* começo do código para o primeiro container da home */}
 
-      <div className="h-[672px] w-full flex flex-col sm:h-[800px] md:h-[840px] md:mt-20 lg:h-[1180px]">
+      <div className="h-[672px] w-full flex flex-col sm:h-[800px] mt-14 md:h-[840px] md:mt-20 lg:h-[1180px] xl:h-[1400px]">
         {/* código referente ao conteiner superior  */}
         <div
           className="w-11/12 h-1/2 bg-purple-50 border-stone-100 rounded-2xl mx-auto flex flex-col shadow-[0px_0px_10px_6px_rgba(25,27,64,0.1)]
@@ -364,7 +364,7 @@ const App = () => {
             <img
               src={Celular}
               alt=""
-              className="w-full rounded-[25px] mx-auto my-auto md:w-auto  md:h-full shadow-black/55 shadow-2xl z-30"
+              className="w-full rounded-[25px] mx-auto my-auto md:w-auto  md:h-full md:shadow-black/55 md:shadow-2xl z-30"
             />
             <div
               className="flex flex-col justify-start h-1/2 bga-red-600 md:h-[170px]
@@ -399,28 +399,101 @@ const App = () => {
 
       {/* começo do código referente as caixas de informações */}
 
-          <div className="w-11/12 bga-red-900 flex flex-col mx-auto -mt-8 mb-96">
-          
-          <div className="w-88 h-60 flex bg-white rounded-xl mx-auto flex-col">
-            <img src={F11} alt="" className="w-2/12 mt-4 ml-6"/>
-            <div className="text-2xl font-bold text-slate-700 mt-3 ml-6">Fluxo Monitorado</div>
-            <div className="mt-2 ml-6 text-base text-slate-700 pr-4">Visualize, analise e tome desições com base em dados reais.</div>
+      <div
+        className="w-11/12 bga-red-900 flex flex-col mx-auto mb-96 bag-yellow-600 mt-6
+          sm:mt-20
+          xl:flex-row xl:justify-between xl:mt-36"
+      >
+        <div className="lg:flex xl:w-2/3 xl:justify-between">
+          <div
+            className="w-full h-60 flex bg-white rounded-xl mx-auto flex-col
+          sm:h-80
+          md:h-96
+          lg:w-5/12 lg:h-72
+          xl:w-96
+          2xlw-[520px]:"
+          >
+            <img src={F11} alt="" className="w-2/12 mt-4 ml-6 sm:mt-8
+            lg:mt-4" />
+            <div
+              className="text-2xl font-bold text-slate-700 mt-3 ml-6
+            sm:text-4xl sm:mt-6
+            md:text-5xl md:mt-8
+            lg:text-3xl lg:mt-4"
+            >
+              Fluxo Monitorado
+            </div>
+            <div
+              className="mt-2 ml-6 text-base text-slate-700 pr-4
+            sm:text-xl
+            md:text-2xl
+            lg:text-xl"
+            >
+              Visualize, analise e tome desições com base em dados reais.
+            </div>
           </div>
 
-          <div className="w-88 h-60 flex bg-white rounded-xl mx-auto flex-col shadow-[0px_0px_20px_6px_rgba(25,27,64,0.15)] z-20">
-            <img src={F12} alt="" className="w-2/12 mt-4 ml-6"/>
-            <div className="text-2xl font-bold text-slate-700 mt-3 ml-6">Decições Rápidas</div>
-            <div className="mt-2 ml-6 text-base text-slate-700 pr-4">Visualize, analise e tome decisões com base em dados reais, utilizando o sistema inteligente, Fluxum.</div>
+          <div
+            className="w-full h-60 flex bg-white rounded-xl mx-auto flex-col shadow-[0px_0px_20px_6px_rgba(25,27,64,0.15)] z-20
+          sm:h-80
+          md:h-96
+          lg:w-5/12 lg:h-72 lg:shadow-none lg:-z-10
+          xl:w-96
+          xl:shadow-[0px_0px_20px_6px_rgba(25,27,64,0.15)] xl:z-20
+          2xl:w-[520px] 2xl:rounded-2xl"
+          >
+            <img src={F12} alt="" className="w-2/12 mt-4 ml-6 sm:mt-8
+            lg:mt-4" />
+            <div
+              className="text-2xl font-bold text-slate-700 mt-3 ml-6
+            sm:text-4xl sm:mt-6
+             md:text-5xl md:mt-8
+             lg:text-3xl lg:mt-4"
+            >
+              Decições Rápidas
+            </div>
+            <div
+              className="mt-2 ml-6 text-base text-slate-700 pr-4
+            sm:text-xl
+            md:text-2xl
+            lg:text-xl"
+            >
+              Visualize, analise e tome decisões com base em dados reais,
+              utilizando o sistema inteligente, Fluxum.
+            </div>
           </div>
+        </div>
 
-          <div className="w-88 h-60 flex bg-white rounded-xl mx-auto flex-col mt-4">
-            <img src={F13} alt="" className="w-2/12 mt-4 ml-6"/>
-            <div className="text-2xl font-bold text-slate-700 mt-3 ml-6">Detecte Riscos</div>
-            <div className="mt-2 ml-6 text-base text-slate-700 pr-4">Receba notificações automáticas sobre movimentações incomuns, atrasos ou situações críticas no fluxo portuário.</div>
+        <div
+          className="w-full h-60 flex bg-white rounded-xl mx-auto flex-col  mt-4
+          sm:h-80
+          md:h-96
+          lg:shadow-[0px_0px_20px_6px_rgba(25,27,64,0.15)] lg:z-20 lg:mt-8 lg:h-80
+          xl:shadow-none xl:mt-0 xl:w-96 xl:h-72 xl:-z-10
+          2xl:w-[520px]"
+        >
+          <img src={F13} alt="" className="w-2/12 mt-4 ml-6 sm:mt-8 lg:w-1/12 xl:w-2/12 xl:mt-4" />
+          <div
+            className="text-2xl font-bold text-slate-700 mt-3 ml-6
+            sm:text-4xl sm:mt-6
+             md:text-5xl md:mt-8
+             lg:mt-4
+             xl:text-3xl"
+          >
+            Detecte Riscos
           </div>
-
+          <div
+            className="mt-2 ml-6 text-base text-slate-700 pr-4
+            sm:text-xl
+            md:text-2xl
+            lg:text-3xl lg:font-light lg:pr-28
+            xl:text-xl xl:font-normal xl:pr-6"
+          >
+            Receba notificações automáticas sobre movimentações incomuns,
+            atrasos ou situações críticas no fluxo portuário.
           </div>
-
+        </div>
+      </div>
     </div>
   );
 };

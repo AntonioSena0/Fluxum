@@ -8,7 +8,7 @@ export default defineConfig({
     // Adiciona a URL do Ngrok à lista de hosts permitidos
     host: true, // Isso permite que o servidor seja acessível na rede local
     allowedHosts: [
-      '057b6b57fb42.ngrok-free.app', // Substitua por sua URL do Ngrok
+      '6a73e3da332ed.ngrok-free.app', // Substitua por sua URL do Ngrok
     ],
   },
 })
