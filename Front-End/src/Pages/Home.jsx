@@ -29,33 +29,40 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import FaqComponent from "../Components/FaqComponent";
+import Footer from "../Components/Footer";
 
 library.add(fas, far, fab);
 
-{/* Perguntas referentes ao faqComponent */}
+{
+  /* Perguntas referentes ao faqComponent */
+}
 
 const faqData = [
   {
     question: "Preciso de conexão à internet?",
-    answer: "Sim, é necessária uma conexão de internet para o funcionamento completo do sistema Fluxum, pois ele utiliza computação em nuvem para processar e armazenar dados em tempo real."
+    answer:
+      "Sim, é necessária uma conexão de internet para o funcionamento completo do sistema Fluxum, pois ele utiliza computação em nuvem para processar e armazenar dados em tempo real.",
   },
   {
     question: "Como funciona a comunicação com os sensores IoT?",
-    answer: "A comunicação é feita via uma rede mesh de longo alcance, que envia os dados para a plataforma Fluxum, onde são processados em tempo real."
+    answer:
+      "A comunicação é feita via uma rede mesh de longo alcance, que envia os dados para a plataforma Fluxum, onde são processados em tempo real.",
   },
   {
     question: "Posso acessar o sistema de qualquer lugar?",
-    answer: "Sim, o sistema é baseado na nuvem e pode ser acessado de qualquer dispositivo com uma conexão à internet, seja um celular, tablet ou computador."
+    answer:
+      "Sim, o sistema é baseado na nuvem e pode ser acessado de qualquer dispositivo com uma conexão à internet, seja um celular, tablet ou computador.",
   },
   {
     question: "O sistema emite alertas para riscos?",
-    answer: "Sim, a plataforma Fluxum monitora dados em tempo real e emite alertas automáticos em caso de anomalias ou riscos de segurança, garantindo uma resposta rápida e eficaz."
+    answer:
+      "Sim, a plataforma Fluxum monitora dados em tempo real e emite alertas automáticos em caso de anomalias ou riscos de segurança, garantindo uma resposta rápida e eficaz.",
   },
   {
     question: "O sistema é compatível com diferentes tipos de sensores?",
-    answer: "Sim, o Fluxum é projetado para ser flexível e se integra a uma ampla variedade de sensores IoT, permitindo que você adapte a plataforma às necessidades específicas do seu porto."
+    answer:
+      "Sim, o Fluxum é projetado para ser flexível e se integra a uma ampla variedade de sensores IoT, permitindo que você adapte a plataforma às necessidades específicas do seu porto.",
   },
-
 ];
 
 // Ícones simples para o botão de abrir e fechar
@@ -186,7 +193,7 @@ const App = () => {
       {/* Menu para mobile que desliza da esquerda */}
       <div
         className={`
-          md:hidden fixed top-0 left-0 h-svh overflow-y-auto w-7/12 bg-purple-50 text-white rounded-e-3xl z-50
+          md:hidden fixed top-0 left-0 h-svh overflow-y-auto w-7/12 bg-white text-white rounded-e-3xl z-50
           transform transition-transform duration-300 ease-in-out
           ${menuOpen ? "translate-x-0 " : "-translate-x-full "}
           ${
@@ -196,7 +203,7 @@ const App = () => {
           }
         `}
       >
-        <div className="flex w-5/6 mx-auto justify-center py-6 mt-4 bg-purple-50 border-b-2 border-indigo-400">
+        <div className="flex w-5/6 mx-auto justify-center py-6 mt-4 bg-white border-b-2 border-indigo-400">
           <div className=" text-2xl text-indigo-500 font-bold flex items-center justify-center">
             <img src={Logo} alt="" />
           </div>
@@ -212,37 +219,37 @@ const App = () => {
           </a>
           <a
             href="#"
-            className="bg-purple-50 py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
+            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
             <img src={DashBoard} className="w-1/6 mr-4 ml-3" alt="" />
             Dashboard
           </a>
           <a
             href="#"
-            className="bg-purple-50 py-2 rounded-e-lg flex w-5/6 text-lg text-indigo-500 font-normal items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
+            className="bg-white py-2 rounded-e-lg flex w-5/6 text-lg text-indigo-500 font-normal items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
             <img src={Aletrtas} className="w-1/6 mr-4 ml-3" alt="" />
             Alertas
           </a>
           <a
             href="#"
-            className="bg-purple-50 py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
+            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
             <img src={Mapa} className="w-1/6 mr-4 ml-3" alt="" />
             Mapas
           </a>
           <a
             href="#"
-            className="bg-purple-50 py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal items-center text-lg hover:bg-indigo-200 hover:text-white transition-all duration-500"
+            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal items-center text-lg hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
             <img src={Relatorio} className="w-1/6 mr-4 ml-3" alt="" />
             Relatórios
           </a>
         </div>
-        <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-xl text-xl left-1/2 -translate-x-1/2 border-2 font-semibold hover:bg-purple-50 hover:text-indigo-500 hover:border-indigo-500 transition-all duration-700">
+        <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-xl text-xl left-1/2 -translate-x-1/2 border-2 font-semibold hover:bg-white hover:text-indigo-500 hover:border-indigo-500 transition-all duration-700">
           Login
         </div>
-        <div className="bg-purple-50 w-5/6 mx-auto h-12 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-xl text-xl font-semibold border-2 border-purple-50 hover:border-indigo-500 transition-all duration-700">
+        <div className="bg-white w-5/6 mx-auto h-12 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-xl text-xl font-semibold border-2 border-purple-50 hover:border-indigo-500 transition-all duration-700">
           Cadastrar-se
         </div>
       </div>
@@ -537,7 +544,7 @@ const App = () => {
 
       {/* Começo do container de dúvidas frequentes */}
 
-      <div className="w-full min-h-screen bg-aared-700 mt-12 flex flex-col mb-96">
+      <div className="w-full min-h-screen bg-aared-700 mt-12 flex flex-col">
         <div
           className="w-5/12 min-h-8 bg-white text-sm flex justify-center mt-4 items-center rounded-md text-indigo-500 mx-auto shadow-[0px_0px_5px_4px_rgba(25,27,64,0.1)]
           sm:w-5/12 sm:h-11 sm:text-lg sm:mt-16
@@ -549,32 +556,44 @@ const App = () => {
           Perguntas Frenquentes
         </div>
 
-        <div className="flex w-10/12 bag-yellow-500 mt-16 text-3xl ml-4 font-bold text-slate-700
+        <div
+          className="flex w-10/12 bag-yellow-500 mt-16 text-3xl ml-4 font-bold text-slate-700
         sm:text-4xl sm:ml-8 sm:mt-24
         md:text-5xl
         lg:text-6xl lg:mb-12
-        2xl:mt-40 2xl:ml-12">
+        2xl:mt-40 2xl:ml-12"
+        >
           Principais <br></br> Perguntas Frequentes
         </div>
 
-          <div className="lg:flex mt-8 lg:justify-between">
-
-        <div className="flex flex-col w-full gap-y-8
-        lg:w-1/2">
-          {faqData.map((item, index) => (
-            <FaqComponent
-              key={index}
-              question={item.question}
-              answer={item.answer}
-            />
-          ))}
+        <div className="lg:flex mt-8 lg:justify-between">
+          <div
+            className="flex flex-col w-full gap-y-8
+        lg:w-1/2"
+          >
+            {faqData.map((item, index) => (
+              <FaqComponent
+                key={index}
+                question={item.question}
+                answer={item.answer}
+              />
+            ))}
           </div>
 
-                    <img src={F14} alt="" className="hidden lg:flex w-1/2 my-auto 
-                    2xl:w-5/12 mr-12" />
-
+          <img
+            src={F14}
+            alt=""
+            className="hidden lg:flex w-1/2 my-auto 
+                    2xl:w-5/12 mr-12"
+          />
         </div>
       </div>
+
+            <div className="mt-16">
+              <Footer />
+            </div>
+
+      
     </div>
   );
 };
