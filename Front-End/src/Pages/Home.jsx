@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import Fluxum from "../assets/fluxum.svg";
-import Relogio from "../assets/clock-3 1.svg";
+
 import DashBoard from "../assets/box 1 (1).svg";
 import Logo from "../assets/logo.svg";
 import Mapa from "../assets/map 1.svg";
@@ -10,32 +9,26 @@ import Relatorio from "../assets/chart-pie 1.svg";
 import Celular from "../assets/CelularH.svg";
 import NotRisco from "../assets/NotRisco.svg";
 import F6 from "../assets/Frame 6.svg";
-import F7 from "../assets/Frame 7.svg";
 import F8 from "../assets/Frame 8.svg";
 import F9 from "../assets/Frame 9.svg";
-import F10 from "../assets/Frame 10.svg";
 import F11 from "../assets/Frame 11.svg";
 import F12 from "../assets/Frame 12.svg";
 import F13 from "../assets/Frame 13.svg";
 import F14 from "../assets/Frame 14.svg";
 
-import { Link } from "react-router-dom";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-
-/* import all the icons in Free Solid, Free Regular, and Brands styles */
-import { fas } from "@fortawesome/free-solid-svg-icons";
-import { far } from "@fortawesome/free-regular-svg-icons";
-import { fab } from "@fortawesome/free-brands-svg-icons";
 import FaqComponent from "../Components/FaqComponent";
 import Footer from "../Components/Footer";
 
-library.add(fas, far, fab);
+/* Imports referentes aos ícones, biblioteca MUI */
 
-{
-  /* Perguntas referentes ao faqComponent */
-}
+import HomeOutline from '@mui/icons-material/HomeOutlined';
+import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
+import NotificationsActiveRoundedIcon from '@mui/icons-material/NotificationsActiveRounded';
+import MapIcon from '@mui/icons-material/Map';
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+
+
 
 const faqData = [
   {
@@ -212,44 +205,44 @@ const App = () => {
         <div className="flex flex-col gap-y-6 mt-10 items-start ">
           <a
             href="#"
-            className=" bg-indigo-500 py-2 rounded-e-lg flex w-5/6 font-normal text-lg text-white items-center relative"
+            className=" bg-indigo-500 py-2 rounded-e-lg flex w-5/6 font-normal text-lg text-white items-center z-30 shadow-[4px_5px_30px__rgba(91,97,179,0.7)]"
           >
-            <img src={Home} className="w-1/6 ml-3 mr-4 text-white" alt="" />
+            <HomeOutline className="text-white ml-3 mr-4 " style={{ fontSize: '2.2rem', fontWeight: '3rem' }} />
             Início
           </a>
           <a
             href="#"
             className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
-            <img src={DashBoard} className="w-1/6 mr-4 ml-3" alt="" />
+            <DashboardRoundedIcon className="text-indigo-500 ml-3 mr-4" style={{ fontSize: '2.2rem' }} />
             Dashboard
           </a>
           <a
             href="#"
             className="bg-white py-2 rounded-e-lg flex w-5/6 text-lg text-indigo-500 font-normal items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
-            <img src={Aletrtas} className="w-1/6 mr-4 ml-3" alt="" />
+            <NotificationsActiveRoundedIcon className="text-indigo-500 ml-3 mr-4" style={{ fontSize: '2.2rem' }} />
             Alertas
           </a>
           <a
             href="#"
             className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
-            <img src={Mapa} className="w-1/6 mr-4 ml-3" alt="" />
+            <MapIcon className="text-indigo-500 ml-3 mr-4" style={{ fontSize: '2.2rem' }} />
             Mapas
           </a>
           <a
             href="#"
             className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal items-center text-lg hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
-            <img src={Relatorio} className="w-1/6 mr-4 ml-3" alt="" />
+            <AssessmentOutlinedIcon className="text-indigo-500 ml-3 mr-4" style={{ fontSize: '2.2rem' }} />
             Relatórios
           </a>
         </div>
         <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-xl text-xl left-1/2 -translate-x-1/2 border-2 font-semibold hover:bg-white hover:text-indigo-500 hover:border-indigo-500 transition-all duration-700">
           Login
         </div>
-        <div className="bg-white w-5/6 mx-auto h-12 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-xl text-xl font-semibold border-2 border-purple-50 hover:border-indigo-500 transition-all duration-700">
+        <div className="bg-white w-5/6 mx-auto h-12 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-xl text-xl font-semibold border-2 border-white hover:border-indigo-500 transition-all duration-700">
           Cadastrar-se
         </div>
       </div>
