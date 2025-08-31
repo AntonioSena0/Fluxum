@@ -70,11 +70,11 @@ const Footer = () => {
               className="flex flex-col justify-center items-center text-indigo-700 text-center list-none gap-y-3 text-sm
           xl:text-xl xl:gap-y-6 xl:mt-4 xl:text-indigo-900"
             >
-              <li>Início</li>
-              <li>Dashboard</li>
-              <li>Alertas</li>
-              <li>Mapa</li>
-              <li>Relatórios</li>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Início</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Dashboard</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Alertas</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Mapa</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Relatórios</p>
             </div>
           </div>
 
@@ -90,10 +90,10 @@ const Footer = () => {
               className="flex flex-col justify-center items-center text-indigo-700 text-center list-none gap-y-3 text-sm
            xl:text-xl xl:gap-y-6 xl:mt-4 xl:text-indigo-900"
             >
-              <p>Iot</p>
-              <p>Painel na nuvem</p>
-              <p>RFID</p>
-              <p>Segurança de dados</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Iot</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Painel na nuvem</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">RFID</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Segurança de dados</p>
             </div>
           </div>
 
@@ -109,11 +109,11 @@ const Footer = () => {
               className="flex flex-col text-indigo-700 gap-y-3 items-center justify-center text-center text-sm
            xl:text-xl xl:gap-y-6 xl:mt-4 xl:text-indigo-900"
             >
-              <p>Monitoramento</p>
-              <p>Alertas</p>
-              <p>Visualização gráfica</p>
-              <p>Dados em nuvem</p>
-              <p>Rastreabilidade logística</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Monitoramento</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Alertas</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Visualização gráfica</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Dados em nuvem</p>
+              <p className="hover:text-indigo-300 transition-all duration-500 hover:scale-110">Rastreabilidade logística</p>
             </div>
           </div>
         </div>

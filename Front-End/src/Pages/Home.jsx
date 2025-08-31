@@ -16,19 +16,19 @@ import F12 from "../assets/Frame 12.svg";
 import F13 from "../assets/Frame 13.svg";
 import F14 from "../assets/Frame 14.svg";
 
-
 import FaqComponent from "../Components/FaqComponent";
 import Footer from "../Components/Footer";
 
 /* Imports referentes aos ícones, biblioteca MUI */
 
-import HomeOutline from '@mui/icons-material/HomeOutlined';
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
-import NotificationsActiveRoundedIcon from '@mui/icons-material/NotificationsActiveRounded';
-import MapIcon from '@mui/icons-material/Map';
-import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import HomeOutline from "@mui/icons-material/HomeOutlined";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import NotificationsActiveRoundedIcon from "@mui/icons-material/NotificationsActiveRounded";
+import MapIcon from "@mui/icons-material/Map";
+import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import Link from "@mui/material/Link";
 
-
+import { Link as RouterLink } from "react-router-dom";
 
 const faqData = [
   {
@@ -143,34 +143,82 @@ const App = () => {
             <div className="w-1/6  rounded-full flex justify-center items-center bg-indigo-500 text-white shadow-[5px_0_10px_0_rgba(91,97,179,0.4)] lg:text-lg">
               Início
             </div>
-            <div className=" hover:text-indigo-300 transition-all duration-500 font-medium text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
-              Dashboard
-            </div>
-            <div className="hover:text-indigo-300 transition-all duration-500 font-medium text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
-              Alertas
-            </div>
-            <div className="hover:text-indigo-300 transition-all duration-500 font-medium text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
-              Mapas
-            </div>
-            <div className="hover:text-indigo-300 transition-all duration-500 font-medium text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
-              Relatórios
-            </div>
+            <Link
+              to="/Dashboard"
+              component={RouterLink}
+              fontSize={18}
+              color="indigo-500"
+              underline="none"
+              className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center"
+            >
+              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+                Dashboard
+              </div>
+            </Link>
+            <Link
+              to="/Alertas"
+              component={RouterLink}
+              fontSize={18}
+              color="indigo-500"
+              underline="none"
+              className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center"
+            >
+              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+                Alertas
+              </div>
+            </Link>
+            <Link
+              to="/Mapa"
+              component={RouterLink}
+              fontSize={18}
+              color="indigo-500"
+              underline="none"
+              className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center"
+            >
+              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+                Mapas
+              </div>
+            </Link>
+            <Link
+              to="/Relatorios"
+              component={RouterLink}
+              fontSize={18}
+              color="indigo-500"
+              underline="none"
+              className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center"
+            >
+              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+                Relatórios
+              </div>
+            </Link>
           </div>
         </div>
         <div className="bg-white w-3/12 flex h-[54px] justify-between my-auto xl:w-4/12 2xl:w-3/12">
-          <div
-            className="hover:text-indigo-300 transition-all duration-500 w-6/12 h-[54px] font-medium text-xs flex justify-center items-center
-           text-indigo-700 bg-white lg:mr-2 lg:text-lg xl:text-xl 2xl:mr-4"
+          <Link
+            to="/Register"
+            component={RouterLink}
+            underline="none"
+            className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center bg-puarple-900"
           >
-            Cadastre-se
-          </div>
+            <div
+              className="hover:text-indigo-300 transition-all duration-500 h-[54px] font-medium text-xs flex justify-center items-center
+           text-indigo-500 bg-swhite lg:mr-2 lg:text-lg xl:text-xl 2xl:mr-4 bg-read-700"
+            >
+              Cadastre-se
+            </div>
+          </Link>
 
+          <Link to="/Login"
+          component={RouterLink}
+          underline="none"
+          className="w-6/12 h-[54px]">
           <div
             className="hover:text-indigo-500 transition-all duration-500 hover:bg-white hover:border-2 hover:border-indigo-500
-           border-indigo-500 border-2 bg-indigo-500 w-6/12 h-[54px] font-medium flex justify-center items-center text-white rounded-2xl lg:text-lg xl:text-xl"
+           border-indigo-500 border-2 bg-indigo-500 w-full h-[54px] font-medium flex justify-center items-center text-white rounded-2xl lg:text-lg xl:text-xl"
           >
             Login
           </div>
+          </Link>
         </div>
       </div>
       {/* Final do código da navbar desktop */}
@@ -207,44 +255,91 @@ const App = () => {
             href="#"
             className=" bg-indigo-500 py-2 rounded-e-lg flex w-5/6 font-normal text-lg text-white items-center z-30 shadow-[4px_5px_30px__rgba(91,97,179,0.7)]"
           >
-            <HomeOutline className="text-white ml-3 mr-4 " style={{ fontSize: '2.2rem', fontWeight: '3rem' }} />
+            <HomeOutline
+              className="text-white ml-3 mr-4 "
+              style={{ fontSize: "2.2rem", fontWeight: "3rem" }}
+            />
             Início
           </a>
-          <a
-            href="#"
-            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
+          <Link
+            to="/Dashboard"
+            component={RouterLink}
+            fontSize={18}
+            color="indigo-500"
+            underline="none"
+            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
-            <DashboardRoundedIcon className="text-indigo-500 ml-3 mr-4" style={{ fontSize: '2.2rem' }} />
+            <DashboardRoundedIcon
+              className="text-indigo-500 ml-3 mr-4"
+              style={{ fontSize: "2.2rem" }}
+            />
             Dashboard
-          </a>
-          <a
-            href="#"
-            className="bg-white py-2 rounded-e-lg flex w-5/6 text-lg text-indigo-500 font-normal items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
+          </Link>
+          <Link
+            to="/Alertas"
+            component={RouterLink}
+            fontSize={18}
+            color="indigo-500"
+            underline="none"
+            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
-            <NotificationsActiveRoundedIcon className="text-indigo-500 ml-3 mr-4" style={{ fontSize: '2.2rem' }} />
+            <NotificationsActiveRoundedIcon
+              className="text-indigo-500 ml-3 mr-4"
+              style={{ fontSize: "2.2rem" }}
+            />
             Alertas
-          </a>
-          <a
-            href="#"
-            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
+          </Link>
+          <Link
+            to="/Mapas"
+            component={RouterLink}
+            fontSize={18}
+            color="indigo-500"
+            underline="none"
+            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
-            <MapIcon className="text-indigo-500 ml-3 mr-4" style={{ fontSize: '2.2rem' }} />
+            <MapIcon
+              className="text-indigo-500 ml-3 mr-4"
+              style={{ fontSize: "2.2rem" }}
+            />
             Mapas
-          </a>
-          <a
-            href="#"
-            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 font-normal items-center text-lg hover:bg-indigo-200 hover:text-white transition-all duration-500"
+          </Link>
+          <Link
+            to="/Relatorios"
+            component={RouterLink}
+            fontSize={18}
+            color="indigo-500"
+            underline="none"
+            className="bg-white py-2 rounded-e-lg flex w-5/6 text-indigo-500 text-lg items-center hover:bg-indigo-200 hover:text-white transition-all duration-500"
           >
-            <AssessmentOutlinedIcon className="text-indigo-500 ml-3 mr-4" style={{ fontSize: '2.2rem' }} />
+            <AssessmentOutlinedIcon
+              className="text-indigo-500 ml-3 mr-4"
+              style={{ fontSize: "2.2rem" }}
+            />
             Relatórios
-          </a>
+          </Link>
         </div>
-        <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-xl text-xl left-1/2 -translate-x-1/2 border-2 font-semibold hover:bg-white hover:text-indigo-500 hover:border-indigo-500 transition-all duration-700">
-          Login
-        </div>
-        <div className="bg-white w-5/6 mx-auto h-12 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-xl text-xl font-semibold border-2 border-white hover:border-indigo-500 transition-all duration-700">
-          Cadastrar-se
-        </div>
+        <Link
+          to="/Login"
+          component={RouterLink}
+          fontSize={18}
+          color="white"
+          underline="none"
+        >
+          <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-xl text-xl left-1/2 -translate-x-1/2 border-2 font-semibold hover:bg-white hover:text-indigo-500 hover:border-indigo-500 transition-all duration-700">
+            Login
+          </div>
+        </Link>
+        <Link
+          to="/Register"
+          component={RouterLink}
+          fontSize={18}
+          color="white"
+          underline="none"
+        >
+          <div className="bg-white w-5/6 mx-auto h-12 mt-6 items-center bottom-8 absolute flex justify-center left-1/2 -translate-x-1/2 text-indigo-500 rounded-xl text-xl font-semibold border-2 border-white hover:border-indigo-500 transition-all duration-700">
+            Cadastrar-se
+          </div>
+        </Link>
       </div>
 
       {/* final do código referente a sidebar mobile aberta */}
@@ -582,11 +677,9 @@ const App = () => {
         </div>
       </div>
 
-            <div className="mt-16">
-              <Footer />
-            </div>
-
-      
+      <div className="mt-16">
+        <Footer />
+      </div>
     </div>
   );
 };
