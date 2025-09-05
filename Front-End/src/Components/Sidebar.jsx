@@ -9,13 +9,15 @@ import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import Link from "@mui/material/Link";
 import Avatar from "@mui/material/Avatar";
 
+import F9 from "../assets/assetsHome/CelularH.svg"
+
 
 const Sidebar = () => {
   return (
-    <div className="flex h-full w-full bg-indigo-50">
-      <div className="w-2/12 h-[95%] my-auto ml-4 bg-white rounded-2xl flex-col ">
+    <div className="flex h-[2000px] w-full bg-indigo-50 pl-24">
+      <div className="w-2/12 h-[95%] top-6 left-4 bg-white rounded-2xl flex-col fixed justify-between">
         <img src={Logo} alt="" className=" bg-blue-700" />
-        <div className="flex flex-col h-1/2 bg-yellow-400 gap-y-2 items-center">
+        <div className="flex flex-col bg-yellow-400 gap-y-2 items-center flex-grow">
           <Link
             to="/Dashboard"
             component={RouterLink}
@@ -65,7 +67,7 @@ const Sidebar = () => {
             />
           </Link>
         </div>
-        <div className="bg-teal-500 h-1/4">
+        <div className="bg-teal-500">
           <Link
             to="/Dashboard"
             component={RouterLink}
@@ -83,7 +85,11 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="bg-yellow-100 w-8/12"></div>
+      <div className="bg-yellow-100 w-8/12 flex flex-col">
+      <img src={F9} alt="" />
+      <img src={F9} alt="" />
+      <img src={F9} alt="" />
+      <img src={F9} alt="" /></div>
     </div>
     
   );
