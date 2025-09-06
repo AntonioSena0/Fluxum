@@ -327,7 +327,7 @@ const App = () => {
           </div>
         </Link>
         <Link
-          to="/Register"
+          to="/Login"
           component={RouterLink}
           fontSize={18}
           color="white"

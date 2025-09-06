@@ -8,15 +8,23 @@ const { query } = require('../database/db');
 const { loginValidator, registerValidator } = require('../validators/users.validators');
 const { validationResult } = require('express-validator');
 
-
-
 const router = express.Router();
 
 const { sendPasswordReset } = require('../services/mailer');
 
 const RESET_EXPIRES_MIN = parseInt(process.env.RESET_EXPIRES_MIN || '30', 10);
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
+
+const RAW_FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URLS = RAW_FRONTEND_URL.split(',').map(s => s.trim()).filter(Boolean);
+
+
+function pickFrontendBase(req) {
+  const origin = String(req.headers.origin || '').trim();
+  if (origin && FRONTEND_URLS.includes(origin)) return origin;
+  const httpsPublic = FRONTEND_URLS.find(u => u.startsWith('https://') && !u.includes('localhost'));
+  return httpsPublic || FRONTEND_URLS[0];
+}
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES || '15m';
@@ -28,13 +36,16 @@ function signAccessToken(user) {
 
 function refreshCookieOpts() {
   const isProd = process.env.NODE_ENV === 'production';
+  const hasCrossSiteHttps =
+    FRONTEND_URLS.some(u => u.startsWith('https://') && !u.includes('localhost'));
+  const sameSite = hasCrossSiteHttps ? 'none' : 'lax';
+  const secure = hasCrossSiteHttps || isProd;
   return {
     httpOnly: true,
-    secure: isProd,
-    sameSite: 'lax',
-    path: '/auth',
+    secure,
+    sameSite,
+    path: '/api/auth',
     maxAge: REFRESH_EXPIRES_DAYS * 24 * 60 * 60 * 1000
-    
   };
 }
 
@@ -111,6 +122,7 @@ router.post('/login', loginValidator, async (req, res) => {
   return res.json({ user, accessToken, refreshToken });
 });
 
+// Forgot password
 router.post('/forgot-password', async (req, res) => {
   const email = String(req.body?.email || '').trim().toLowerCase();
   const okResp = () => res.status(202).json({ message: 'Se o e-mail existir, enviaremos instruções.' });
@@ -131,7 +143,8 @@ router.post('/forgot-password', async (req, res) => {
       [user.id, tokenHash, expiresAt, req.ip, req.headers['user-agent'] || null]
     );
 
-    const link = `${FRONTEND_URL}/reset-password?token=${encodeURIComponent(token)}`;
+    const base = pickFrontendBase(req);
+    const link = `${base.replace(/\/+$/, '')}/reset-password?token=${encodeURIComponent(token)}`;
 
     try {
       await sendPasswordReset(user.email, user.name, link);
@@ -150,7 +163,7 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-
+// Reset password
 router.post('/reset-password', async (req, res) => {
   const token = String(req.body?.token || '');
   const newPassword = String(req.body?.password || '');
@@ -163,7 +176,6 @@ router.post('/reset-password', async (req, res) => {
     return res.status(400).json({ error: 'As senhas não coincidem' });
   }
 
-  const crypto = require('crypto');
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
   try {
@@ -197,8 +209,7 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
-
-
+// Validate reset token
 router.get('/reset-password/validate', async (req, res) => {
   const token = String(req.query?.token || '');
   if (!token) return res.status(400).json({ valid: false });
@@ -213,8 +224,7 @@ router.get('/reset-password/validate', async (req, res) => {
   return res.json({ valid });
 });
 
-
-// Refresh (rotação)
+// Refresh
 router.post('/refresh', async (req, res) => {
   const token = getRefreshFromReq(req);
   if (!token) return res.status(401).json({ error: 'Refresh ausente' });
@@ -245,7 +255,7 @@ router.post('/logout', async (req, res) => {
   const token = getRefreshFromReq(req);
   if (token) {
     await query('UPDATE refresh_tokens SET revoked_at=NOW() WHERE token=$1 AND revoked_at IS NULL', [token]);
-    res.clearCookie('refreshToken', { path: '/auth' });
+    res.clearCookie('refreshToken', { path: '/api/auth' });
   }
   return res.status(204).send();
 });

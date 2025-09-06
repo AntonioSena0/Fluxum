@@ -6,7 +6,7 @@ const { v4: uuid } = require('uuid');
 
 const logger = pino({
   level: process.env.LOG_LEVEL || 'info',
-  // Reduz risco de vazar dados em logs
+ 
   redact: {
     paths: [
       'req.headers.authorization',
@@ -33,7 +33,7 @@ function httpLogger() {
     genReqId: (req) => req.id || uuid(),
     customProps: (req) => ({ reqId: req.id }),
     autoLogging: {
-      // evita “poluir” logs com healthchecks
+      
       ignorePaths: ['/health', '/ready', '/metrics']
     }
   });
@@ -68,7 +68,7 @@ function httpMetrics() {
     res.on('finish', () => {
       end({
         method: req.method,
-        route: req.route?.path || req.path, // cuidado: pode agrupar por path completo
+        route: req.route?.path || req.path,
         status_code: res.statusCode
       });
     });
