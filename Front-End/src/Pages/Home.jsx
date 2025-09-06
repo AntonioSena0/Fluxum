@@ -115,7 +115,7 @@ const App = () => {
       {/* logo e botão para abrir a sidebar mobile */}
       <div className="w-full bg-white md:hidden h-20 flex justify-between items-center">
         <div className="md:hidden ml-4">
-          <button onClick={handleMenuToggle} className="p-2 text-indigo-500">
+          <button onClick={handleMenuToggle} className="p-2 text-violeta">
             {menuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
         </div>
@@ -130,14 +130,14 @@ const App = () => {
       md:w-full md:mx-0 md:justify-between md:text-sm
       2xl:w-5/6 2xl:mx-auto"
       >
-        <div className="flex bg-white  md:w-8/12 justify-around">
+        <div className="flex bg-white  md:w-8/12 justify-start mr-8">
           <img src={Logo} alt="" className="m-0" />
 
           <div
-            className="bg-slate-100 flex rounded-full w-5/6 h-16
+            className="bg-bege flex rounded-full w-5/6 h-16
         md:overflow-x-hidden"
           >
-            <div className="w-1/6  rounded-full flex justify-center items-center bg-indigo-500 text-white shadow-[5px_0_10px_0_rgba(91,97,179,0.4)] lg:text-lg">
+            <div className="w-36 rounded-full flex justify-center items-center bg-violeta text-white shadow-[3px_0_10px_0_rgba(91,97,179,0.4)] lg:text-lg">
               Início
             </div>
             <Link
@@ -146,9 +146,9 @@ const App = () => {
               fontSize={18}
               color="indigo-500"
               underline="none"
-              className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center"
+              className="py-2 rounded-e-lg flex  text-violeta text-lg items-center"
             >
-              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-violeta flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
                 Dashboard
               </div>
             </Link>
@@ -158,9 +158,9 @@ const App = () => {
               fontSize={18}
               color="indigo-500"
               underline="none"
-              className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center"
+              className="py-2 rounded-e-lg flex  text-violeta text-lg items-center"
             >
-              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-violeta flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
                 Alertas
               </div>
             </Link>
@@ -170,9 +170,9 @@ const App = () => {
               fontSize={18}
               color="indigo-500"
               underline="none"
-              className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center"
+              className="py-2 rounded-e-lg flex  text-violeta text-lg items-center"
             >
-              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-violeta flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
                 Mapas
               </div>
             </Link>
@@ -182,9 +182,9 @@ const App = () => {
               fontSize={18}
               color="indigo-500"
               underline="none"
-              className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center"
+              className="py-2 rounded-e-lg flex  text-violeta text-lg items-center"
             >
-              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-indigo-500 flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
+              <div className=" hover:text-indigo-300 transition-all duration-500 font-medium py-3.5 text-violeta flex justify-center items-center mx-2 text-base lg:text-lg lg:mx-5 xl:mx-8 xl:text-xl">
                 Relatórios
               </div>
             </Link>
@@ -195,11 +195,11 @@ const App = () => {
             to="/Register"
             component={RouterLink}
             underline="none"
-            className="py-2 rounded-e-lg flex  text-indigo-500 text-lg items-center bg-puarple-900"
+            className="py-2 rounded-e-lg flex  text-violeta text-lg items-center bg-puarple-900"
           >
             <div
               className="hover:text-indigo-300 transition-all duration-500 h-[54px] font-medium text-xs flex justify-center items-center
-           text-indigo-500 bg-swhite lg:mr-2 lg:text-lg xl:text-xl 2xl:mr-4 bg-read-700"
+           text-violeta bg-swhite lg:mr-2 lg:text-lg xl:text-xl 2xl:mr-4 bg-read-700"
             >
               Cadastre-se
             </div>
@@ -210,8 +210,8 @@ const App = () => {
           underline="none"
           className="w-6/12 h-[54px]">
           <div
-            className="hover:text-indigo-500 transition-all duration-500 hover:bg-white hover:border-2 hover:border-indigo-500
-           border-indigo-500 border-2 bg-indigo-500 w-full h-[54px] font-medium flex justify-center items-center text-white rounded-2xl lg:text-lg xl:text-xl"
+            className="hover:text-indigo-500 transition-all duration-500 hover:bg-white hover:border-2 hover:border-violeta
+           border-violeta border-2 bg-violeta w-full h-[54px] font-medium flex justify-center items-center text-white rounded-2xl lg:text-lg xl:text-xl"
           >
             Login
           </div>
@@ -322,7 +322,7 @@ const App = () => {
           color="white"
           underline="none"
         >
-          <div className="bg-indigo-500 w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-xl text-xl left-1/2 -translate-x-1/2 border-2 font-semibold hover:bg-white hover:text-indigo-500 hover:border-indigo-500 transition-all duration-700">
+          <div className="bg-violeta w-5/6 mx-auto h-12 mt-10 items-center absolute bottom-24 flex justify-center rounded-xl text-xl left-1/2 -translate-x-1/2 border-2 font-semibold hover:bg-white hover:text-indigo-500 hover:border-indigo-500 transition-all duration-700">
             Login
           </div>
         </Link>
@@ -346,50 +346,55 @@ const App = () => {
       <div className="h-[672px] w-full flex flex-col sm:h-[800px] mt-14 md:h-[840px] md:mt-20 lg:h-[1180px] xl:h-[1400px]">
         {/* código referente ao conteiner superior  */}
         <div
-          className="w-11/12 h-1/2 bg-purple-50 border-stone-100 rounded-2xl mx-auto flex flex-col shadow-[0px_0px_10px_6px_rgba(25,27,64,0.1)]
+          className="w-11/12 h-1/2 bg-bege border-borda border-4 rounded-3xl mx-auto flex flex-col
         sm:min-h-96
         md:min-h-[420px]
         lg:min-h-[680px]
         2xl:min-h-[800px]"
         >
+           {}
+  <div className="absolute w-6 h-6 bg-broxa rounded-full top-72 left-80 opacity-100"></div>
+  <div className="absolute w-9 h-9 bg-bsalmao rounded-full top-80 right-1/3 opacity-100"></div>
+  <div className="absolute w-5 h-5 bg-bvermelho rounded-full top-72 right-72 opacity-100"></div>
+
           <div
-            className="w-5/12 h-8 bg-white text-sm flex justify-center items-center rounded-md text-indigo-500 mx-auto mt-12 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.1)]
+            className="w-5/12 h-8 bg-white text-sm flex justify-center items-center rounded-2xl text-violeta mx-auto mt-12 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.03)]
           sm:w-4/12 sm:h-9
           md:w-3/12
-          lg:w-2/12 lg:mt-24
+          lg:w-2/12 lg:mt-36
           xl:h-10 xl:text-base
           2xl:text-lg"
           >
             Controle o Fluxo
           </div>
           <div
-            className="w-11/12 h-22 text-lg justify-center items-center text-center font-bold mx-auto mt-8 text-slate-700
+            className="w-11/12 h-22 text-lg justify-center items-center text-center font-bold mx-auto mt-8 text-azulEscuro
           sm:text-2xl
           md:text-3xl
           lg:px-24 lg:text-4xl lg:mt-20
           xl:text-5xl
-          2xl:px-48 2xl:text-6xl"
+          2xl:px-48 2xl:text-5xl"
           >
             Explore Dados em Fluxo e Monitore o Essencial em Tempo Real.
           </div>
           <div
-            className="w-11/12 h-22 text-xs justify-center items-center text-center font-base mx-auto mt-3 text-slate-950
+            className="w-11/12 h-22 text-xs justify-center items-center text-center font-base mx-auto mt-3 text-azulEscuro
           sm:text-sm
           md:text-base md:mt-8
           lg:text-xl lg:px-48 lg:mt-6
-          2xl:text-2xl 2xl:px-64"
+          2xl:text-xl 2xl:px-64"
           >
             Visualize, analise e tome decisões com base em dados reais,
             utilizando o sistema inteligente, Fluxum.
           </div>
           <div
-            className="flex justify-between w-4/6 mx-auto mt-8
+            className="flex justify-center gap-8 w-4/6 mx-auto mt-8
           md:w-1/2
-          lg:mt-20
-          2xl:mt-28 2xl:w-2/6"
+          lg:mt-18
+          2xl:mt-12 2xl:w-2/6"
           >
             <div
-              className="w-5/12 h-8 bg-indigo-500 text-white flex justify-center items-center rounded-lg
+              className="w-5/12 h-8 bg-violeta text-white flex justify-center items-center rounded-xl shadow-[0px_0px_2px_1px_rgba(25,27,64,0.03)]
             sm:h-9
             lg:h-10
             xl:w-4/12
@@ -397,8 +402,9 @@ const App = () => {
             >
               Iniciar
             </div>
+              <div className="absolute w-4 h-4 bg-bamarelo rounded-full top-1/5 left-96 opacity-100"></div>
             <div
-              className="w-5/12 h-8 bg-white flex justify-center items-center rounded-lg text-indigo-500 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.1)]
+              className="w-5/12 h-8 bg-white flex justify-center items-center rounded-xl text-violeta shadow-[0px_0px_5px_4px_rgba(25,27,64,0.05)]
             sm:h-9
             lg:h-10
             xl:w-4/12
@@ -406,12 +412,13 @@ const App = () => {
             >
               Explorar
             </div>
+            <div className="absolute w-7 h-7 bg-bazul rounded-full top-1/5 right-96 opacity-100"></div>
           </div>
         </div>
 
-        {/* código referente ao container inferior */}
+        {}
         <div
-          className="w-11/12 h-7/12 z-80 bg-indigo-500 rounded-2xl mx-auto flex justify-between border-4 border-indigo-500 -mt-6 md:min-h-[440px]
+          className="w-11/12 h-7/12 z-80 bg-violeta rounded-2xl mx-auto flex justify-between border-4 border-violeta -mt-6 md:min-h-[440px]
         lg:min-h-[500px]
         2xl:min-h-[600px]"
         >
@@ -434,7 +441,7 @@ const App = () => {
                 O que é o Fluxum?
               </div>
               <div
-                className="text-sm mt-2 font-bold text-white
+                className="text-sm mt-2 font-GT font-bold text-white
               sm:text-base
               md:text-xl md:mr-8
               lg:text-2xl lg:mt-6
@@ -473,6 +480,7 @@ const App = () => {
                 Com o Fluxum, portos se tornam mais eficientes, seguros e
                 conectados.
               </div>
+              
             </div>
             <img src={NotRisco} className="ml-2 mb-0.3 sm:hidden" alt="" />
           </div>
@@ -540,25 +548,25 @@ const App = () => {
             lg:mt-4"
             />
             <div
-              className="text-2xl font-bold text-slate-700 mt-3 ml-6
+              className="text-2xl font-bold text-azulEscuro font-GT mt-3 ml-6
             sm:text-4xl sm:mt-6
-            md:text-5xl md:mt-8
-            lg:text-3xl lg:mt-4"
+            md:text-3xl md:mt-8
+            lg:text-xl lg:mt-4"
             >
               Fluxo Monitorado
             </div>
             <div
-              className="mt-2 ml-6 text-base text-slate-700 pr-4
+              className="mt-2 ml-6 text-base text-azulEscuro pr-4
             sm:text-xl
             md:text-2xl
-            lg:text-xl"
+            lg:text-base"
             >
               Visualize, analise e tome decisões com base em dados reais.
             </div>
           </div>
 
           <div
-            className="w-full h-60 flex bg-white rounded-xl mx-auto flex-col shadow-[0px_0px_20px_6px_rgba(25,27,64,0.15)] z-20
+            className="w-full h-87 flex bg-white rounded-xl mx-auto flex-col shadow-[0px_0px_20px_6px_rgba(25,27,64,0.15)] z-20
           sm:h-80
           md:h-96
           lg:w-5/12 lg:h-72 lg:shadow-none lg:-z-10
@@ -573,18 +581,18 @@ const App = () => {
             lg:mt-4"
             />
             <div
-              className="text-2xl font-bold text-slate-700 mt-3 ml-6
+              className="text-2xl font-bold  text-azulEscuro font-GT mt-3 ml-6
             sm:text-4xl sm:mt-6
              md:text-5xl md:mt-8
-             lg:text-3xl lg:mt-4"
+             lg:text-xl lg:mt-4"
             >
               Decisões Rápidas
             </div>
             <div
-              className="mt-2 ml-6 text-base text-slate-700 pr-4
+              className="mt-2 ml-6 text-base text-azulEscuro pr-4
             sm:text-xl
             md:text-2xl
-            lg:text-xl"
+            lg:text-base"
             >
               Visualize, analise e tome decisões com base em dados reais,
               utilizando o sistema inteligente, Fluxum.
@@ -603,23 +611,24 @@ const App = () => {
           <img
             src={F13}
             alt=""
-            className="w-2/12 mt-4 ml-6 sm:mt-8 lg:w-1/12 xl:w-2/12 xl:mt-4"
+            className="w-2/12 mt-4 ml-6 sm:mt-8
+            lg:mt-4"
           />
           <div
-            className="text-2xl font-bold text-slate-700 mt-3 ml-6
+            className="text-2xl font-bold  text-azulEscuro font-GT mt-3 ml-6
             sm:text-4xl sm:mt-6
-             md:text-5xl md:mt-8
+             md:text-2xl md:mt-8
              lg:mt-4
-             xl:text-3xl"
+             xl:text-xl"
           >
             Detecte Riscos
           </div>
           <div
-            className="mt-2 ml-6 text-base text-slate-700 pr-4 
+            className="mt-2 ml-6 text-base text-azulEscuro pr-4 
             sm:text-xl
-            md:text-2xl
-            lg:text-3xl lg:font-light lg:pr-28
-            xl:text-xl xl:font-normal xl:pr-6"
+            md:text-xl
+            lg:text-lg 
+            xl:text-base xl:font-normal xl:pr-6"
           >
             Receba notificações automáticas sobre movimentações incomuns,
             atrasos ou situações críticas no fluxo portuário.
