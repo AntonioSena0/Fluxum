@@ -1,43 +1,50 @@
 import React, { useState } from "react";
 
-// O componente agora recebe 'question' e 'answer' como props
 const FaqComponent = ({ question, answer }) => {
-  // Estado para controlar a visibilidade da resposta
   const [isOpen, setIsOpen] = useState(false);
 
-  // Função para alternar o estado de abertura
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <div className="w-10/12 mx-auto my-auto rounded-xl overflow-hidden">
+    <div
+      className={`w-10/12 mx-auto my-auto rounded-xl overflow-hidden transition-colors duration-500
+        ${isOpen ? "bg-faq" : "bg-white"}
+      `}
+    >
       {/* Container da Pergunta */}
       <div
-        className={`flex w-full h-24 justify-between bg-white border-2 border-gray-300 cursor-pointer
-            md:text-xl
-          ${isOpen ? "rounded-t-xl border-b-0" : "rounded-xl"}
+        className={`flex w-full h-20 justify-between border-[3.1px] cursor-pointer
+          md:text-xl transition-colors duration-500
+          ${isOpen ? "rounded-t-xl border-b-0 bg-faq border-faq" : "rounded-xl bg-white border-bor"}
         `}
         onClick={handleToggle}
       >
-        <div className="my-auto ml-2 font-bold text-slate-700 pr-6">
+        <div
+          className={`my-auto pl-4 text-[18px] font-bold pl-6 
+            ${isOpen ? "text-res" : "text-azulEscuro"}
+          `}
+        >
           {question}
         </div>
-        <div className="my-auto mr-8 text-3xl font-bold text-indigo-500 lg:hover:scale-125 transition-all lg:hover:text-indigo-300 duration-500">
-          {isOpen ? "-" : "+"}
+
+        <div
+          className={`my-auto mr-8 text-3xl font-bold transition-all duration-500
+            lg:hover:scale-105 lg:hover:text-violeta
+            ${isOpen ? "text-res" : "text-azulEscuro"}`}
+        >
+          {isOpen ? '-' : '+'}
         </div>
       </div>
 
-      {/* Container da Resposta, renderizado condicionalmente com transição */}
+      {/* Container da Resposta */}
       <div
-        className={`w-full bg-indigo-500 text-white transition-all duration-500 ease-in-out md:text-lg lg:text-base
-          ${isOpen ? "max-h-[500px] opacity-100 p-4 -mt-2" : "max-h-0 opacity-0 p-0"}
-          ${isOpen ? "rounded-b-xl" : ""}
+        className={`w-full text-res transition-all duration-500 ease-in-out md:text-base lg:text-[14px]
+          ${isOpen ? "max-h-[500px] opacity-100 p-4 -mt-2 rounded-b-xl" : "max-h-0 opacity-0 p-0"}
         `}
       >
-        <p className="my-auto">
-          {answer}
-        </p>
+        <p className="my-auto pl-2 pr-2">{answer}</p>
       </div>
     </div>
   );
