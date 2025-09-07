@@ -352,10 +352,9 @@ const App = () => {
         lg:min-h-[680px]
         2xl:min-h-[800px]"
         >
-           {}
-  <div className="absolute w-6 h-6 bg-broxa rounded-full top-72 left-80 opacity-100"></div>
-  <div className="absolute w-9 h-9 bg-bsalmao rounded-full top-80 right-1/3 opacity-100"></div>
-  <div className="absolute w-5 h-5 bg-bvermelho rounded-full top-72 right-72 opacity-100"></div>
+  <div className="absolute w-6 h-6 bg-broxa rounded-full top-72 left-80 opacity-100 hidden xl:block"></div>
+  <div className="absolute w-9 h-9 bg-bsalmao rounded-full top-80 right-1/3 opacity-100 hidden xl:block"></div>
+  <div className="absolute w-5 h-5 bg-bvermelho rounded-full top-72 right-72 opacity-100 hidden xl:block"></div>
 
           <div
             className="w-5/12 h-8 bg-white text-sm flex justify-center items-center rounded-2xl text-violeta mx-auto mt-12 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.03)]
@@ -393,36 +392,35 @@ const App = () => {
           lg:mt-18
           2xl:mt-12 2xl:w-2/6"
           >
-            <div
-              className="w-5/12 h-8 bg-violeta text-white flex justify-center items-center rounded-xl shadow-[0px_0px_2px_1px_rgba(25,27,64,0.03)]
+            <a href="/Login"
+              className="w-5/12 h-8 bg-violeta text-white flex justify-center items-center rounded-xl cursor-pointer border-2 border-violeta hover:bg-transparent hover:text-violeta hover:border-violeta hover:border-2 duration-500 shadow-[0px_0px_2px_1px_rgba(25,27,64,0.03)]
             sm:h-9
             lg:h-10
             xl:w-4/12
             2xl:text-lg"
             >
               Iniciar
-            </div>
-              <div className="absolute w-4 h-4 bg-bamarelo rounded-full top-1/5 left-96 opacity-100"></div>
-            <div
-              className="w-5/12 h-8 bg-white flex justify-center items-center rounded-xl text-violeta shadow-[0px_0px_5px_4px_rgba(25,27,64,0.05)]
+            </a>
+              <div className="absolute w-4 h-4 bg-bamarelo rounded-full top-1/5 left-96 opacity-100 hidden xl:block"></div>
+            <a href="/dashboard"
+              className="w-5/12 h-8 bg-white flex justify-center items-center rounded-xl text-violeta cursor-pointer hover:bg-violeta hover:text-white duration-500 shadow-[0px_0px_5px_4px_rgba(25,27,64,0.05)]
             sm:h-9
             lg:h-10
             xl:w-4/12
             2xl:text-lg"
             >
               Explorar
-            </div>
-            <div className="absolute w-7 h-7 bg-bazul rounded-full top-1/5 right-96 opacity-100"></div>
+            </a>
+            <div className="absolute w-7 h-7 bg-bazul rounded-full top-1/5 right-96 opacity-100 hidden xl:block"></div>
           </div>
         </div>
 
-        {}
         <div
           className="w-11/12 h-7/12 z-80 bg-violeta rounded-2xl mx-auto flex justify-between border-4 border-violeta -mt-6 md:min-h-[440px]
         lg:min-h-[500px]
         2xl:min-h-[600px]"
         >
-          <div className="absolute w-5 h-5 bg-bvermelho rounded-full top-1/12 right-72 opacity-100"></div>
+          <div className="absolute w-5 h-5 bg-bvermelho rounded-full top-1/12 right-72 opacity-100 hidden xl:block"></div>
           <div
             className="flex flex-col w-3/6 min-h-full justify-between
           2xl:w-3/6"
@@ -483,7 +481,7 @@ const App = () => {
               </div>
               
             </div>
-            <div className="absolute w-8 h-8 bg-bsalmao rounded-full top-3/4 left-[820px]"></div>
+            <div className="absolute w-8 h-8 bg-bsalmao rounded-full top-3/4 left-[820px] hidden xl:block"></div>
             <img src={NotRisco} className="ml-2 mb-0.3 sm:hidden" alt="" />
           </div>
           <div
@@ -491,7 +489,7 @@ const App = () => {
           xl:ml-0 xl:mr-0
           2xl:mr-16 2xl:-mat-6"
           >
-            <div className="absolute w-5 h-5 bg-bvermelho rounded-full -top-14 left-44"></div>
+            <div className="absolute w-5 h-5 bg-bvermelho rounded-full -top-14 left-44 hidden xl:block"></div>
             <img
               src={Celular}
               alt=""
@@ -501,7 +499,7 @@ const App = () => {
               className="flex flex-col justify-start h-1/2 bga-red-600 md:h-[170px]
             lg:h-72"
             >
-              <div className="absolute w-9 h-9 bg-bsalmao rounded-full -top-16 -left-9"></div>
+              <div className="absolute w-9 h-9 bg-bsalmao rounded-full -top-16 -left-9 hidden xl:block"></div>
               <img
                 src={NotRisco}
                 className="hidden rounded-md md:flex md:w-auto md:h-auto md:min-w-40 md:mt-1 md:ml-2 md-lg:min-w-44 shadow-black/70 shadow-2xl"
@@ -551,7 +549,7 @@ const App = () => {
               className="w-20 mt-4 ml-6 mb-4 sm:mt-8
             lg:mt-4"
             />
-            <div className="absolute w-6 h-6 bg-bazul rounded-full top-[2150px] left-[180px]"></div>
+            <div className="absolute w-6 h-6 bg-bazul rounded-full top-[2150px] left-[180px] hidden xl:block"></div>
             <div
               className="text-2xl font-bold text-azulEscuro font-GT mt-3 ml-6
             sm:text-4xl sm:mt-6
@@ -656,32 +654,31 @@ const App = () => {
   </div>
 
   <div className="w-11/12 mx-auto mt-16">
-    <div
-      className="text-3xl font-bold ml-12 relative font-GT text-azulEscuro
-        sm:text-4xl
-        md:text-5xl
-        lg:text-[42px] lg:mb-12
-        2xl:mt-10"
-    >
-      Principais <br /> Perguntas Frequentes
-    </div>
+    <div className="text-3xl font-bold relative font-GT text-azulEscuro
+  sm:text-4xl
+  md:text-5xl
+  lg:text-[42px] lg:mb-12
+  2xl:mt-10
+  text-left
+">
+  Principais <br /> Perguntas Frequentes
+</div>
+
     
 
     <div className="lg:flex mt-8 lg:justify-between lg:items-start">
-      <div
-        className="flex flex-col w-full gap-y-7
-          lg:w-1/2"
-      >
-        {faqData.map((item, index) => (
-          <FaqComponent
-            key={index}
-            question={item.question}
-            answer={item.answer}
-          />
-        ))}
-      </div>
+    <div className="flex flex-col w-full gap-y-7 lg:w-1/2 mx-auto lg:mx-0">
+      {faqData.map((item, index) => (
+        <FaqComponent
+          key={index}
+          question={item.question}
+          answer={item.answer}
+        />
+      ))}
+    </div>
+
       
-            <div className="absolute w-8 h-8 bg-bsalmao rounded-full top-[1800px] right-[180px]"></div>
+            <div className="absolute w-8 h-8 bg-bsalmao rounded-full top-[1800px] right-[180px] hidden xl:block"></div>
 
       <img
         src={F14}
@@ -690,7 +687,7 @@ const App = () => {
       />
 
       
-            <div className="absolute w-8 h-8 bg-bazul rounded-full top-[2500px] right-[180px]"></div>
+            <div className="absolute w-8 h-8 bg-bazul rounded-full top-[2500px] right-[180px] hidden xl:block"></div>
     </div>
   </div>
 </div>

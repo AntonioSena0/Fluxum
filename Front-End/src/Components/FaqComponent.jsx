@@ -9,7 +9,7 @@ const FaqComponent = ({ question, answer }) => {
 
   return (
     <div
-      className={`w-10/12 mx-auto my-auto rounded-xl overflow-hidden transition-colors duration-500
+      className={`w-10/12 my-auto rounded-xl overflow-hidden transition-colors duration-500
         ${isOpen ? "bg-faq" : "bg-white"}
       `}
     >

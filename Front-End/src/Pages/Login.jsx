@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
-import Apple from "../assets/assetsLogin/apple.png";
+import GitHub from "../assets/assetsLogin/github.png";
 import Google from "../assets/assetsLogin/google.png";
 import WordPress from "../assets/assetsLogin/wordpress.png";
 import Perigo from "../assets/assetsLogin/perigo.png";
@@ -108,8 +108,8 @@ const Dashboard = () => {
               className="flex-1 text-xs py-2 px-4 text-azulEscuro border-2 border rounded-2xl flex items-center justify-center gap-0.5 hover:text-roxo hover:bg-white hover:border-white transition-colors duration-300"
               type="button"
             >
-              <img src={Apple} alt="Logo da Apple" className="w-9 h-5" />
-              {isRegister ? "Cadastrar com Apple" : "Login com Apple"}
+              <img src={GitHub} alt="Logo do GitHub" className="w-7 h-7 mr-1" />
+              {isRegister ? "Cadastrar com GitHub" : "Login com GitHub"}
             </button>
           </div>
         )}
