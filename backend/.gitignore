@@ -1,0 +1,74 @@
+# =========================
+# Backend (Node / Express)
+# =========================
+
+# Dependências
+node_modules/
+.pnpm-store/
+.npm/
+
+# Logs
+logs/
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# PIDs
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Cobertura / testes
+coverage/
+.nyc_output/
+
+# Builds / artefatos de compilação
+dist/
+build/
+out/
+lib/
+
+# Cache de linters/bundlers
+.eslintcache
+.rollup.cache/
+parcel-cache/
+
+# TypeScript (se usar)
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Variáveis de ambiente (NÃO versionar segredos)
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.env.template
+!.env.schema
+
+# Bancos locais (ex.: SQLite em dev)
+*.sqlite
+*.sqlite-journal
+
+# Certificados/keys locais
+*.pem
+*.key
+*.crt
+*.cert
+
+# Uploads / temporários (ajuste conforme seu app)
+tmp/
+temp/
+uploads/
+
+# SO / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
