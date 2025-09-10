@@ -7,26 +7,91 @@ import Megafone from "../assets/assetsDashboard/Frame 15.svg";
 import Caminhao from "../assets/assetsDashboard/Frame 16.svg";
 import { Chart } from "react-google-charts";
 import React from "react";
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
-export const data = [
-  ["Task", "Hours per Day"],
-  ["Carregado", 75],
-  ["Descarregado", 25], // CSS-style declaration
-];
+// Registra os componentes necessários
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-export const options = {
-  pieHole: 0.6,
-  is3D: false,
-  legend: "none",
-  pieSliceText: "none",
-  colors: ["#5B61B3", "#9F9CE8"],
+// Plugin para tornar o fundo do gráfico transparente
+const transparentBackgroundPlugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart) => {
+    const { ctx } = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = 'rgba(0,0,0,0)'; // Cor transparente
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  },
 };
+
+// Plugin para desenhar o texto no centro do gráfico
+const centerTextPlugin = {
+  id: 'centerText',
+  beforeDraw: (chart) => {
+    const { width, height, ctx } = chart;
+    ctx.save();
+
+    const occupiedData = chart.config.data.datasets[0].data[0];
+    const totalData = chart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
+    const percentage = ((occupiedData / totalData) * 100).toFixed(0);
+
+    const text = `${percentage}%`;
+
+
+    // Calcula a posição central do gráfico
+    const centerX = width / 2;
+    const centerY = height / 2;
+
+    // Define a fonte e alinha o texto ao centro
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Desenha a porcentagem
+    ctx.font = '24px sans-serif';
+    ctx.fillStyle = '#3E41C0';
+    ctx.fillText(text, centerX, centerY);
+
+
+
+    ctx.restore();
+  },
+};
+
+const data = {
+  labels: ['Bateria disponível', 'Bateria consumida'],
+  datasets: [
+    {
+      label: '%',
+      data: [75, 25], // Dois dados para o gráfico de rosquinha
+      backgroundColor: ['#3E41C0', '#FFFFFF'], // Roxo e Cinza
+      borderColor: ['#FFFFFF'],
+      borderWidth: 0,
+    },
+  ],
+};
+
+const options = {
+  responsive: true,
+  cutout: '70%', // Define o tamanho do centro do anel
+  plugins: {
+    legend: {
+      display: false, // Remove a legenda
+    },
+    tooltip: {
+      enabled: true, // Habilita o tooltip ao passar o mouse
+    },
+  },
+};
+
+
 
 const Dashboard = () => {
   return (
-    <div className="flex min-w-full min-h-svh bg-indigo-50">
+    <div className="flex min-w-full min-h-svh bg-indigo-50 h-svh justify-between">
       <Sidebar2 />
-      <div className="ml-24 bga-red-400 w-9/12">
+      <div className=" bga-red-400 w-9/12">
         <div className="w-full bag-yellow-200 mt-10 flex justify-center items-center">
           <div className="text-lg">Oi, Felipe!</div>
 
@@ -38,7 +103,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="w-[96%] bg-white h-5/6 mt-8 rounded-xl flex flex-col px-4">
+        <div className="w-[96%] bg-white h-[85%] mt-8 rounded-xl flex flex-col px-4">
           <div className="mt-4 text-xl font-semibold text-indigo-900">
             Dashboard
           </div>
@@ -83,16 +148,9 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-indigo-100 w-full h-44 rounded-3xl">
-              <Chart
-                chartType="PieChart"
-                width="130px"
-                height="130px"
-                data={data}
-                options={options}
-                className="bg-red-400"
-                chartA
-              />
+            <div className="bg-indigo-100 w-full h-44 rounded-3xl py-6 pl-4 ">
+              {""}
+              <Doughnut data={data} options={options} plugins={[transparentBackgroundPlugin, centerTextPlugin]} />
             </div>
           </div>
         </div>
