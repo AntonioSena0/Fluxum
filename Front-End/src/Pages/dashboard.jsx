@@ -100,11 +100,11 @@ const Dashboard = () => {
           />
         </div>
 
-        <div className="w-[96%] bg-white mt-8 rounded-xl flex flex-col px-4 pb-10 mb-8">
+        <div className="w-[96%] bg-white mt-8 rounded-xl flex flex-col px-4 pb-10 mb-8 h-5/6">
           <div className="mt-4 text-xl font-semibold text-indigo-900">
             Dashboard
           </div>
-          <div className="flex flex-col w-full justify-between bg-ared-300 mt-4 gap-y-4">
+          <div className="flex flex-col w-full justify-between bg-ared-300 mt-8 gap-y-3">
             <div className="w-full mx-auto bg-indigo-100 rounded-3xl h-20 flex justify-between items-center px-6">
               <div className="text-violeta text-4xl font-bold ml-2">157</div>
               <div className="text-lg font-medium text-slate-900">
@@ -121,7 +121,7 @@ const Dashboard = () => {
                 Conectar Iot
               </div>
             </div>
-            <div className="bg-indigo-100 w-full h-72 rounded-3xl flex px-1 flex-col">
+            <div className="bg-indigo-100 w-full h-72 rounded-3xl flex px-1 flex-col mt-3">
               <div className="flex w-full h-1/3 justify-between items-center px-2">
                 <img
                   src={Termometro}
@@ -145,7 +145,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-indigo-100 w-full h-28 rounded-3xl py-4 pl-4 flex justify-between
+            <div className="bg-indigo-100 w-full h-28 rounded-3xl py-4 pl-4 mt-4 flex justify-between
             sm:h-28">
               <div className="h-20">
               {""}

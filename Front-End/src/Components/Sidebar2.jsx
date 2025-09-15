@@ -26,7 +26,8 @@ import F9 from "../assets/assetsHome/CelularH.svg";
 
 const Sidebar2 = () => {
   return (
-    <div className="bg-white w-2/12 rounded-2xl flex flex-col justify-between my-6 mb-12 ml-4">
+    <div className="bg-white w-2/12 rounded-2xl flex flex-col justify-between my-6 mb-12 ml-4
+    sm:mb-16 sm:w-24">
       <div className="w-full  h-3/6 mt-2 text-white flex flex-col gap-y-4 items-center">
         <img src={Logo} alt="" className=" mb-4" />
 
@@ -35,7 +36,8 @@ const Sidebar2 = () => {
           component={RouterLink}
           fontSize={18}
           underline="none"
-          className="py-1 flex bg-indigo-500 w-9/12 mx-auto rounded-2xl"
+          className="py-1 flex bg-indigo-500 w-9/12 mx-auto rounded-2xl
+          sm:max-w-14"
         >
           <Icon
             path={mdiCubeOutline}
