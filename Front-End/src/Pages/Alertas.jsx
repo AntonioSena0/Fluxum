@@ -152,44 +152,45 @@ const Alertas = () => {
             {alertasFiltrados.length > 0 ? (
               alertasFiltrados.map((alerta) => (
                 <div
-                  key={alerta.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between bg-[#F2F6FB] px-4 md:px-6 py-4 md:py-5 rounded-3xl gap-4 sm:gap-0"
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow cursor-pointer"
-                      onClick={() => abrirModal(alerta)}
-                    >
-                      <img
-                        src={alerta.icone}
-                        alt="icone alerta"
-                        className="w-6 h-6"
-                      />
-                    </div>
-                    <p className="text-[#3E41C0] font-medium break-words">
-                      {alerta.titulo}
-                    </p>
-                  </div>
+  key={alerta.id}
+  className="grid grid-cols-1 sm:grid-cols-12 sm:items-center bg-[#F2F6FB] px-4 md:px-6 py-4 md:py-5 rounded-3xl gap-4"
+>
+  
+  <div className="flex items-center gap-4 sm:col-span-7">
+    <div
+      className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow cursor-pointer"
+      onClick={() => abrirModal(alerta)}
+    >
+      <img src={alerta.icone} alt="icone alerta" className="w-6 h-6" />
+    </div>
+    <p className="text-[#3E41C0] font-medium break-words">
+      {alerta.titulo}
+    </p>
+  </div>
 
-                  <span className="text-sm text-[#3E41C0]">{alerta.tempo}</span>
+  
+  <span className="text-sm text-[#3E41C0] text-center sm:col-span-2">
+    {alerta.tempo}
+  </span>
 
-                  <button
-                    onClick={() =>
-                      alerta.acao === "Marcar como concluída" &&
-                      concluirAlerta(alerta.id)
-                    }
-                    className={`font-medium text-sm px-8 py-4 rounded-full bg-white flex items-center justify-center gap-2 ${
-                      alerta.acao === "Nada para concluir . . ."
-                        ? "text-violeta"
-                        : "text-[#3BB61F] hover:underline"
-                    }`}
-                  >
-                    {alerta.acao === "Marcar como concluída" && (
-                      <img src={Check} alt="check" className="w-4 h-4" />
-                    )}
-                    {alerta.acao}
-                  </button>
-                </div>
+  {/* Coluna 3: ação */}
+  <button
+    onClick={() =>
+      alerta.acao === "Marcar como concluída" && concluirAlerta(alerta.id)
+    }
+    className={`font-medium text-sm px-8 py-4 rounded-full bg-white flex items-center justify-center gap-2 sm:col-span-3 ${
+      alerta.acao === "Nada para concluir . . ."
+        ? "text-violeta"
+        : "text-[#3BB61F] hover:underline"
+    }`}
+  >
+    {alerta.acao === "Marcar como concluída" && (
+      <img src={Check} alt="check" className="w-4 h-4" />
+    )}
+    {alerta.acao}
+  </button>
+</div>
+
               ))
             ) : (
               <p className="text-gray-500 text-sm">
