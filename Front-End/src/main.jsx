@@ -29,6 +29,7 @@ const router = createBrowserRouter([
   { path: "/oauth/success", element: <OAuthSuccess /> },
   { path: "/Perfil", element: <Perfil /> },
   { path: "/Dashboard", element: <Dashboard /> },
+    { path: "/Alertas", element: <Alertas /> },
 
   {
     element: <PrivateRoute />,
