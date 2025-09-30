@@ -13,12 +13,14 @@ import OAuthSuccess from "./Pages/OAuthSuccess.jsx";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ResetPassword from "./Pages/ResetPassword.jsx";
+import FormCad from "./Pages/FormCad.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
   { path: "/Login", element: <Login /> },
   { path: "/reset-password", element: <ResetPassword /> },
   { path: "/oauth/success", element: <OAuthSuccess /> },
+  { path: "/FormCad", element: <FormCad /> },
   {
     element: <PrivateRoute />,
     children: [
