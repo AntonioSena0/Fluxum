@@ -88,7 +88,6 @@ const Navios = () => {
       <div className="flex-1 px-6 py-8">
 
         <div className="flex justify-between">
-            <h2></h2>
         <div className="relative flex-1 max-w-full sm:max-w-4xl mb-4">
           <input
             type="text"
