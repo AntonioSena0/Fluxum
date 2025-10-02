@@ -12,23 +12,26 @@ const DetalheNavio = () => {
       <Sidebar2 />
 
       <div className="flex-1 p-6 lg:p-10">
-        {/* título da página */}
+
         <h1 className="text-center text-xl lg:text-2xl font-GT text-azulEscuro mb-6">
           Detalhe do Navio
         </h1>
 
         <div className="bg-white rounded-2xl shadow-sm p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* coluna esquerda - mapa */}
-          <div className="flex flex-col">
-            {/* header navio + botão */}
+
+          <div className="lg:col-span-2">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-3">
                 <h2 className="text-2xl font-GT text-azulEscuro">
                   Estrela do Mar
                 </h2>
-                <img src={Caneta} onClick={() => navigate("/EditarNavio")} alt="editar" className="w-5 h-5 cursor-pointer" />
+                <img
+                  src={Caneta}
+                  onClick={() => navigate("/EditarNavio")}
+                  alt="editar"
+                  className="w-5 h-5 cursor-pointer"
+                />
               </div>
-
               <button
                 type="button"
                 onClick={() => navigate("/Mapa")}
@@ -37,10 +40,11 @@ const DetalheNavio = () => {
                 Nova Viagem
               </button>
             </div>
-
             <p className="text-azulEscuro font-medium mt-2">Cód: 10010</p>
+          </div>
 
-            <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm mt-6">
+          <div>
+            <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
               <iframe
                 title="mapa"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3656.4828539605663!2d-46.63587852378939!3d-23.58693676251227!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5a28aa7ea6ab%3A0x55b0c7a9df8333d4!2sETEC%20Zona%20Leste!5e0!3m2!1spt-BR!2sbr!4v1700000000000"
@@ -52,11 +56,10 @@ const DetalheNavio = () => {
             </div>
           </div>
 
-          {/* coluna direita - detalhes */}
           <div className="flex flex-col gap-6">
-            {/* informações da viagem */}
+
             <div>
-              <h4 className="text-[#494594] flex items-center gap-2 mt-2 mb-6">
+              <h4 className="text-[#494594] flex items-center gap-2 mb-6">
                 <img src={Informacao} alt="informação" className="w-5 h-5" />
                 Informações da Viagem
               </h4>
@@ -84,31 +87,46 @@ const DetalheNavio = () => {
               </div>
             </div>
 
-            {/* contêineres */}
             <div>
               <p className="text-[#494594] flex items-center gap-2 mb-3">
                 <img src={Container} alt="container" className="w-5 h-5" />
                 Contêineres a Bordo
               </p>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm bg-deletar rounded-3xl pb-8">
+                <table className="w-full text-sm bg-[#ECF2F9] rounded-3xl overflow-hidden">
                   <thead>
-                    <tr className="text-left text-azulEscuro">
-                      <th className="px-16 py-2 bg-white">ID</th>
-                      <th className="px-10 py-2 bg-white">Status</th>
-                      <th className="px-4 py-2 bg-white">Última temp.</th>
+                    <tr className="text-azulEscuro font-semibold">
+                      <th className="px-6 py-3">
+                        <div className="bg-white rounded-full px-10 py-2 inline-block">
+                          ID
+                        </div>
+                      </th>
+                      <th className="px-6 py-3">
+                        <div className="bg-white rounded-full px-10 py-2 inline-block">
+                          Status
+                        </div>
+                      </th>
+                      <th className="px-6 py-3">
+                        <div className="bg-white rounded-full px-6 py-2 inline-block">
+                          Última temp.
+                        </div>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b border-gray-200">
-                      <td className="px-16 py-3">12345</td>
-                      <td className="px-10 py-3 text-[#3BB61F]">Ativo</td>
-                      <td className="px-4 py-3">32,2° C</td>
+                    <tr className="text-azulEscuro">
+                      <td className="text-center px-6 py-3">12345</td>
+                      <td className="text-center px-6 py-3 text-[#3BB61F]">
+                        Ativo
+                      </td>
+                      <td className="text-center px-6 py-3">32,2° C</td>
                     </tr>
-                    <tr>
-                      <td className="px-16 py-3">67890</td>
-                      <td className="px-10 py-3 text-[#F21D4E]">Inativo</td>
-                      <td className="px-4 py-3">15,8° C</td>
+                    <tr className="text-azulEscuro">
+                      <td className="text-center px-6 py-3">67890</td>
+                      <td className="text-center px-6 py-3 text-[#F21D4E]">
+                        Inativo
+                      </td>
+                      <td className="text-center px-6 py-3">15,8° C</td>
                     </tr>
                   </tbody>
                 </table>
