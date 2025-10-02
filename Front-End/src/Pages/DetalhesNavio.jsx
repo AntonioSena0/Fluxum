@@ -97,17 +97,17 @@ const DetalheNavio = () => {
                   <thead>
                     <tr className="text-azulEscuro font-semibold">
                       <th className="px-6 py-3">
-                        <div className="bg-white rounded-full px-10 py-2 inline-block">
+                        <div className="bg-white font-GT rounded-full px-10 py-2 inline-block">
                           ID
                         </div>
                       </th>
                       <th className="px-6 py-3">
-                        <div className="bg-white rounded-full px-10 py-2 inline-block">
+                        <div className="bg-white font-GT rounded-full px-10 py-2 inline-block">
                           Status
                         </div>
                       </th>
                       <th className="px-6 py-3">
-                        <div className="bg-white rounded-full px-6 py-2 inline-block">
+                        <div className="bg-white font-GT rounded-full px-6 py-2 inline-block">
                           Última temp.
                         </div>
                       </th>

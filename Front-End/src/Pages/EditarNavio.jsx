@@ -152,7 +152,7 @@ const EditarNavio = () => {
 
         <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-6">
           <button
-            type="button" onClick={() => navigate("/Navio")}
+            type="button" onClick={() => navigate("/Navios")}
             className="w-full sm:w-36 h-10 rounded-xl font-medium text-[14px] bg-[#ECF2F9] text-[#5B61B3] hover:bg-slate-200 duration-300"
           >
             Voltar
