@@ -1,3 +1,4 @@
+// Front-End/src/Pages/FormNavio.jsx
 import { useState } from "react";
 import Sidebar2 from "../Components/Sidebar2";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +14,7 @@ const FormNavio = () => {
     navio: "",
     container: "",
     sensores: { temperatura: false, umidade: false, movimento: false, localizacao: false },
-    ativo: false,
+    ativo: true,
     bandeira: "",
     status: "",
     origem: "",
@@ -27,11 +28,16 @@ const FormNavio = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleToggle = () => {
+    setFormData((prev) => ({ ...prev, ativo: !prev.ativo }));
+  };
+
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const r = await apiFetch("/api/v1/ships", {
+     const r = await apiFetch("/api/v1/ships", {
         method: "POST",
+        auth: true,
         body: {
           name: formData.nome,
           imo: formData.idCod,
@@ -40,11 +46,16 @@ const FormNavio = () => {
           from_port: formData.origem,
           to_port: formData.destino,
           eta_date: formData.eta,
-          departure_at: formData.saida ? new Date(formData.saida).toISOString() : null
+          departure_at: formData.saida ? new Date(formData.saida).toISOString() : null,
+          active: Boolean(formData.ativo)
         }
       });
-      const id = r?.ship_id;
-      if (id) navigate(`/DetalhesNavio?id=${id}`); else navigate("/Navio");
+      const shipId = r?.ship_id ?? r?.id;   // aceita ship_id ou id (se seu backend aliás retornar "id")
+ if (shipId) {
+   navigate(`/DetalhesNavio?id=${shipId}`);
+ } else {
+   navigate("/Navios");
+ }
     } catch (err) {
       alert(err.message || "Erro ao cadastrar");
     }
@@ -94,7 +105,7 @@ const FormNavio = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <div>
               <p className="text-sm mb-2 text-azulEscuro">Saída</p>
               <input type="datetime-local" name="saida" value={formData.saida} onChange={handleChange} className="h-12 w-full rounded-xl bg-[#F4F7FB] px-4 text-[13px] text-roxo focus:outline-none focus:ring-2 focus:ring-violeta" />
@@ -105,8 +116,19 @@ const FormNavio = () => {
             </div>
           </div>
 
+          <div className="mb-12">
+            <p className="text-sm mb-6 text-azulEscuro">Ativo</p>
+            <button
+              type="button"
+              onClick={handleToggle}
+              className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${formData.ativo ? "bg-violeta" : "bg-[#ECF2F9]"}`}
+            >
+              <div className={`bg-white w-4 h-4 rounded-full transform transition-transform ${formData.ativo ? "translate-x-6" : ""}`}></div>
+            </button>
+          </div>
+
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-6">
-            <button type="button" onClick={() => navigate("/Navios")} className="w-full sm:w-36 h-10 rounded-xl font-medium text-[14px] bg-[#ECF2F9] text-[#5B61B3] hover:bg-slate-200 duration-300">Voltar</button>
+            <button type="button" onClick={() => navigate("/Navio")} className="w-full sm:w-36 h-10 rounded-xl font-medium text-[14px] bg-[#ECF2F9] text-[#5B61B3] hover:bg-slate-200 duration-300">Voltar</button>
             <button type="submit" className="w-full sm:w-36 h-10 rounded-xl font-medium bg-violeta text-white text-[14px] hover:bg-roxo duration-300">Cadastrar</button>
           </div>
         </form>

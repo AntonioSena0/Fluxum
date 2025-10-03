@@ -43,7 +43,7 @@ const EditarNavio = () => {
   useEffect(() => {
     let live = true;
     if (!id) { setLoading(false); return; }
-    apiFetch(`/api/v1/ships/${id}`)
+    apiFetch(`/api/v1/ships/${id}`, { auth:true })
       .then(r => {
         if (!live) return;
         setFormData(s => ({
@@ -74,6 +74,7 @@ const EditarNavio = () => {
     try {
       await apiFetch(`/api/v1/ships/${id}`, {
         method: "PUT",
+        auth:true,
         body: {
           name: formData.nome,
           imo: formData.idCod,

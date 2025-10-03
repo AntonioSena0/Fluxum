@@ -193,6 +193,15 @@ v1Alias.use("/alerts", v1Alerts);
 v1Alias.use("/dashboard", v1Dashboard);
 app.use("/api", v1Alias);
 
+async function pruneOldAlerts() {
+  try {
+    await pool.query(`delete from alerts where created_at < now() - interval '1 minute'`);
+  } catch {}
+}
+setInterval(pruneOldAlerts, 60 * 1000);
+pruneOldAlerts();
+
+
 app.use((req, res) => res.status(404).json({ error: "Not Found" }));
 app.use((err, _req, res, _next) => {
   logger.error({ err }, "Unhandled error");

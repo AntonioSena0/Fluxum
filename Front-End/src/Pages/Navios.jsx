@@ -1,3 +1,4 @@
+// Front-End/src/Pages/Navios.jsx
 import { useEffect, useMemo, useState } from "react";
 import Sidebar2 from "../Components/Sidebar2";
 import Ancora from "../assets/assetsNavios/ancora.svg";
@@ -18,7 +19,9 @@ const Navios = () => {
   useEffect(() => {
     let live = true;
     setLoading(true);
-    apiFetch("/api/v1/ships")
+  
+ apiFetch("/api/v1/ships", { auth: true })
+
       .then(d => { if (live) setRows(Array.isArray(d)?d:[]) })
       .catch(() => { if (live) setRows([]) })
       .finally(() => { if (live) setLoading(false) });
@@ -42,7 +45,8 @@ const Navios = () => {
       status: [r.status || ""].filter(Boolean),
       de: r.from_port || "—",
       para: r.to_port || "—",
-      id: r.ship_id
+      id: r.ship_id,
+      inativo: r.active === false
     }));
     const filtrado = base
       .filter(n => {
@@ -74,7 +78,7 @@ const Navios = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#ECF2F9] flex flex-col md:flex-row relative">
-      <Sidebar2 />
+     <Sidebar2 />
       <div className="flex-1 px-6 py-8">
         <div className="flex justify-between">
           <div className="relative flex-1 max-w-full sm:max-w-4xl mb-4">
@@ -121,11 +125,14 @@ const Navios = () => {
                 return (
                   <div
                     key={n.id}
-                    className="bg-[#ECF2F9] rounded-3xl p-6 shadow-sm flex justify-between items-center cursor-pointer"
+                    className={`${n.inativo ? "bg-[#F8EAEA]" : "bg-[#ECF2F9]"} rounded-3xl p-6 shadow-sm flex justify-between items-center cursor-pointer`}
                     onClick={() => navigate(`/DetalhesNavio?id=${n.id}`)}
                   >
                     <div>
-                      <h3 className="text-[22px] text-azulEscuro font-GT">{n.nome}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-[22px] text-azulEscuro font-GT">{n.nome}</h3>
+                        {n.inativo && <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#FEE2E2] text-[#B91C1C]">Inativo</span>}
+                      </div>
                       <p className="text-[11px] text-gray-500">Cód: {n.cod || "—"}</p>
                       <div className="flex gap-2 my-3 items-center flex-wrap">
                         {n.status.map((s, idx) => (

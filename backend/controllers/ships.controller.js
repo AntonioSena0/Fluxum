@@ -1,63 +1,104 @@
-// controllers/ships.controller.js
-const { query } = require('../database/db');
+const { query } = require("../database/db");
 
 exports.create = async (req, res) => {
   try {
-    const nameRaw = req.body?.name;
-    const name = typeof nameRaw === 'string' ? nameRaw.trim() : '';
+    const account_id = req.account_id;
+    const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
     if (!name) return res.status(400).json({ error: 'Campo "name" é obrigatório' });
-
     const imo = req.body?.imo ? String(req.body.imo).trim() : null;
     const flag = req.body?.flag ? String(req.body.flag).trim() : null;
-
+    const status = req.body?.status ? String(req.body.status).trim() : null;
+    const from_port = req.body?.from_port ? String(req.body.from_port).trim() : null;
+    const to_port = req.body?.to_port ? String(req.body.to_port).trim() : null;
+    const eta_date = req.body?.eta_date ? String(req.body.eta_date).trim() : null;
+    const departure_at = req.body?.departure_at ? String(req.body.departure_at).trim() : null;
+    const capacity = req.body?.capacity ? Number(req.body.capacity) : null;
+    const active = typeof req.body?.active === "boolean" ? req.body.active : true;
     const sql = `
-      INSERT INTO ships (name, imo, flag)
-      VALUES ($1, NULLIF($2,''), NULLIF($3,''))
-      RETURNING ship_id, name, imo, flag, created_at
+      INSERT INTO ships (account_id, name, imo, flag, status, from_port, to_port, eta_date, departure_at, capacity, active)
+      VALUES ($1, $2, NULLIF($3,''), NULLIF($4,''), NULLIF($5,''), NULLIF($6,''), NULLIF($7,''), $8::date, $9::timestamptz, $10, $11)
+      RETURNING ship_id, account_id, name, imo, flag, status, from_port, to_port, eta_date, departure_at, capacity, active, created_at
     `;
-    const r = await query(sql, [name, imo, flag]);
+    const r = await query(sql, [account_id, name, imo, flag, status, from_port, to_port, eta_date, departure_at, capacity, active]);
     return res.status(201).json(r.rows[0]);
   } catch (e) {
-    if (e.code === '23505') {
-      return res.status(409).json({ error: 'IMO já cadastrado' });
-    }
-    console.error(e);
-    return res.status(500).json({ error: 'Erro ao criar navio' });
+    if (e.code === "23505") return res.status(409).json({ error: "Conflito de duplicidade" });
+    return res.status(500).json({ error: "Erro interno" });
   }
 };
 
 exports.list = async (req, res) => {
-  const q = String(req.query?.query || '').trim();
-  const params = [];
-  let where = '';
-  if (q) {
-    params.push(`%${q}%`);
-    where = `WHERE name ILIKE $1 OR imo ILIKE $1`;
+  try {
+    const account_id = req.account_id;
+    const r = await query(
+      `SELECT ship_id, account_id, name, imo, flag, status, from_port, to_port, eta_date, departure_at, capacity, active, created_at
+         FROM ships
+        WHERE account_id = $1
+        ORDER BY ship_id DESC
+        LIMIT 500`,
+      [account_id]
+    );
+    return res.json(r.rows);
+  } catch (e) {
+    return res.status(500).json({ error: "Erro interno" });
   }
-  const sql = `
-    SELECT ship_id, name, imo, flag, created_at
-      FROM ships
-      ${where}
-     ORDER BY created_at DESC
-     LIMIT 200
-  `;
-  const r = await query(sql, params);
-  return res.json(r.rows);
 };
 
 exports.getById = async (req, res) => {
-  const idStr = String(req.params.ship_id || '').trim();
-  const shipId = /^\d+$/.test(idStr) ? Number(idStr) : NaN;
-  if (!Number.isFinite(shipId)) {
-    return res.status(400).json({ error: 'ship_id inválido (numérico)' });
+  try {
+    const account_id = req.account_id;
+    const shipId = Number(req.params.ship_id);
+    if (!Number.isFinite(shipId)) return res.status(400).json({ error: "ship_id inválido" });
+    const r = await query(
+      `SELECT ship_id, account_id, name, imo, flag, status, from_port, to_port, eta_date, departure_at, capacity, active, created_at
+         FROM ships
+        WHERE account_id = $1 AND ship_id = $2
+        LIMIT 1`,
+      [account_id, shipId]
+    );
+    if (r.rowCount === 0) return res.status(404).json({ error: "Navio não encontrado" });
+    return res.json(r.rows[0]);
+  } catch (e) {
+    return res.status(500).json({ error: "Erro interno" });
   }
-  const r = await query(
-    `SELECT ship_id, name, imo, flag, created_at
-       FROM ships
-      WHERE ship_id = $1
-      LIMIT 1`,
-    [shipId]
-  );
-  if (r.rowCount === 0) return res.status(404).json({ error: 'Navio não encontrado' });
-  return res.json(r.rows[0]);
+};
+
+exports.update = async (req, res) => {
+  try {
+    const account_id = req.account_id;
+    const shipId = Number(req.params.ship_id);
+    if (!Number.isFinite(shipId)) return res.status(400).json({ error: "ship_id inválido" });
+    const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
+    if (!name) return res.status(400).json({ error: 'Campo "name" é obrigatório' });
+    const imo = req.body?.imo ? String(req.body.imo).trim() : null;
+    const flag = req.body?.flag ? String(req.body.flag).trim() : null;
+    const status = req.body?.status ? String(req.body.status).trim() : null;
+    const from_port = req.body?.from_port ? String(req.body.from_port).trim() : null;
+    const to_port = req.body?.to_port ? String(req.body.to_port).trim() : null;
+    const eta_date = req.body?.eta_date ? String(req.body.eta_date).trim() : null;
+    const departure_at = req.body?.departure_at ? String(req.body.departure_at).trim() : null;
+    const capacity = req.body?.capacity ? Number(req.body.capacity) : null;
+    const active = typeof req.body?.active === "boolean" ? req.body.active : true;
+    const r = await query(
+      `UPDATE ships
+          SET name = $1,
+              imo = NULLIF($2,''),
+              flag = NULLIF($3,''),
+              status = NULLIF($4,''),
+              from_port = NULLIF($5,''),
+              to_port = NULLIF($6,''),
+              eta_date = $7::date,
+              departure_at = $8::timestamptz,
+              capacity = $9,
+              active = $10
+        WHERE account_id = $11 AND ship_id = $12
+        RETURNING ship_id, account_id, name, imo, flag, status, from_port, to_port, eta_date, departure_at, capacity, active, created_at`,
+      [name, imo, flag, status, from_port, to_port, eta_date, departure_at, capacity, active, account_id, shipId]
+    );
+    if (r.rowCount === 0) return res.status(404).json({ error: "Navio não encontrado" });
+    return res.json(r.rows[0]);
+  } catch (e) {
+    if (e.code === "23505") return res.status(409).json({ error: "Conflito de duplicidade" });
+    return res.status(500).json({ error: "Erro interno" });
+  }
 };

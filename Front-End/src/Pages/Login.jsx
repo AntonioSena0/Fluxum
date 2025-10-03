@@ -97,26 +97,28 @@ const Dashboard = () => {
     }
   }
   async function handleForgotSubmit() {
-    setErr("");
-    const em = email.trim();
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
-    if (!emailOk) return setErr("Email inválido.");
+  setErr("");
+  const em = email.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+  if (!emailOk) return setErr("Email inválido.");
 
-    setLoading(true);
-    try {
-      await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: em }),
-      });
-      setErr("Se o e-mail existir, enviaremos instruções.");
-    } catch {
-      setErr("Erro ao solicitar recuperação.");
-    } finally {
-      setLoading(false);
-    }
+  setLoading(true);
+  try {
+   const API = import.meta.env.VITE_API_URL || "";
+await fetch(`${API}/api/auth/forgot-password`, {
+  method: "POST",
+  credentials: "include",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ email: em }),
+});
+    setErr("Se o e-mail existir, enviaremos instruções.");
+  } catch {
+    setErr("Erro ao solicitar recuperação.");
+  } finally {
+    setLoading(false);
   }
+}
+
 
   return (
     <div className="min-h-screen flex justify-center">

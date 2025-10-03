@@ -1,10 +1,9 @@
-// routes/users.routes.js
-const express = require('express');
-const argon2 = require('argon2');
-const { query } = require('../database/db');
-const { authRequired, requireRole } = require('../middleware/auth');
-const { validationResult } = require('express-validator');
-const { userUpdateValidator } = require('../validators/users.validators');
+const express = require("express");
+const { pool } = require("../database/db");
+const { authRequired, requireRole } = require("../middleware/auth");
+const { validationResult } = require("express-validator");
+const { userUpdateValidator } = require("../validators/users.validators");
+const argon2 = require("argon2");
 
 const router = express.Router();
 
@@ -13,47 +12,55 @@ function isUuid(v) {
 }
 
 router.get('/me', authRequired, async (req, res) => {
-  const result = await query(
-    `SELECT id, name, email, role, created_at, updated_at
-     FROM users
-     WHERE id = $1`,
-    [req.user.sub]
-  );
-  if (result.rowCount === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
-  return res.json(result.rows[0]);
+  try {
+    // ATENÇÃO: users.id é UUID → passe a string do req.user.id
+    const { rows } = await pool.query(
+      `SELECT id, name, email, role, account_id, created_at, updated_at
+         FROM users
+        WHERE id = $1
+        LIMIT 1`,
+      [req.user.id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+    return res.json(rows[0]);
+  } catch (e) {
+    console.error('[GET /users/me] error:', e);
+    return res.status(500).json({ error: 'Erro ao carregar perfil' });
+  }
 });
 
-router.get('/lookup', authRequired, requireRole('admin'), async (req, res) => {
-  const email = String(req.query.email || '').trim().toLowerCase();
-  if (!email) return res.status(400).json({ error: 'Parâmetro email é obrigatório' });
-
-  const result = await query(
+router.get("/lookup", authRequired, requireRole("admin"), async (req, res) => {
+  const email = String(req.query.email || "").trim().toLowerCase();
+  if (!email) return res.status(400).json({ error: "Parâmetro email é obrigatório" });
+  const result = await pool.query(
     `SELECT id, name, email, role, created_at, updated_at
      FROM users
      WHERE email = $1`,
     [email]
   );
-  if (result.rowCount === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
+  if (result.rowCount === 0) return res.status(404).json({ error: "Usuário não encontrado" });
   return res.json(result.rows[0]);
 });
 
-router.post('/promote', authRequired, requireRole('admin'), async (req, res) => {
-  const email = String((req.body && req.body.email) || '').trim().toLowerCase();
-  if (!email) return res.status(400).json({ error: 'Campo email é obrigatório' });
-
-  const result = await query(
+router.post("/promote", authRequired, requireRole("admin"), async (req, res) => {
+  const email = String((req.body && req.body.email) || "").trim().toLowerCase();
+  if (!email) return res.status(400).json({ error: "Campo email é obrigatório" });
+  const result = await pool.query(
     `UPDATE users
         SET role = 'admin', updated_at = NOW()
       WHERE email = $1
   RETURNING id, name, email, role, created_at, updated_at`,
     [email]
   );
-  if (result.rowCount === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
+  if (result.rowCount === 0) return res.status(404).json({ error: "Usuário não encontrado" });
   return res.json(result.rows[0]);
 });
 
-router.get('/', authRequired, async (_req, res) => {
-  const result = await query(
+router.get("/", authRequired, async (_req, res) => {
+  const result = await pool.query(
     `SELECT id, name, email, role, created_at, updated_at
      FROM users
      ORDER BY created_at DESC`
@@ -61,31 +68,27 @@ router.get('/', authRequired, async (_req, res) => {
   return res.json(result.rows);
 });
 
-router.get('/:id', authRequired, async (req, res) => {
+router.get("/:id", authRequired, async (req, res) => {
   const { id } = req.params;
-  if (!isUuid(id)) return res.status(400).json({ error: 'id inválido (UUID esperado)' });
-
-  const result = await query(
+  if (!isUuid(id)) return res.status(400).json({ error: "id inválido (UUID esperado)" });
+  const result = await pool.query(
     `SELECT id, name, email, role, created_at, updated_at
      FROM users
      WHERE id=$1`,
     [id]
   );
-  if (result.rowCount === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
+  if (result.rowCount === 0) return res.status(404).json({ error: "Usuário não encontrado" });
   return res.json(result.rows[0]);
 });
 
-router.post('/', authRequired, requireRole('admin'), async (req, res) => {
-  const { name, email, password, role = 'user' } = req.body || {};
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'name, email e password são obrigatórios' });
-  }
+router.post("/", authRequired, requireRole("admin"), async (req, res) => {
+  const { name, email, password, role = "user" } = req.body || {};
+  if (!name || !email || !password) return res.status(400).json({ error: "name, email e password são obrigatórios" });
   const emailNorm = String(email).trim().toLowerCase();
-  const exists = await query('SELECT id FROM users WHERE email=$1', [emailNorm]);
-  if (exists.rowCount > 0) return res.status(409).json({ error: 'Email já cadastrado' });
-
+  const exists = await pool.query("SELECT id FROM users WHERE email=$1", [emailNorm]);
+  if (exists.rowCount > 0) return res.status(409).json({ error: "Email já cadastrado" });
   const password_hash = await argon2.hash(password);
-  const insert = await query(
+  const insert = await pool.query(
     `INSERT INTO users (name, email, password_hash, role)
      VALUES ($1, $2, $3, $4)
      RETURNING id, name, email, role, created_at, updated_at`,
@@ -94,67 +97,47 @@ router.post('/', authRequired, requireRole('admin'), async (req, res) => {
   return res.status(201).json(insert.rows[0]);
 });
 
-router.patch('/:id', authRequired, userUpdateValidator, async (req, res) => {
+router.patch("/:id", authRequired, userUpdateValidator, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
   const { id } = req.params;
-  if (!isUuid(id)) return res.status(400).json({ error: 'id inválido (UUID esperado)' });
-
-  if (req.user.role !== 'admin' && req.user.sub !== id) {
-    return res.status(403).json({ error: 'Você só pode editar sua própria conta' });
-  }
-
+  if (!isUuid(id)) return res.status(400).json({ error: "id inválido (UUID esperado)" });
+  if (req.user.role !== "admin" && req.user.sub !== id) return res.status(403).json({ error: "Você só pode editar sua própria conta" });
   const fields = [];
   const values = [];
   let idx = 1;
-
-  if (typeof req.body.name === 'string') {
-    fields.push(`name = $${idx++}`);
-    values.push(req.body.name.trim());
-  }
-  if (typeof req.body.email === 'string') {
+  if (typeof req.body.name === "string") { fields.push(`name = $${idx++}`); values.push(req.body.name.trim()); }
+  if (typeof req.body.email === "string") {
     const emailNorm = req.body.email.trim().toLowerCase();
-    const conflict = await query('SELECT 1 FROM users WHERE email=$1 AND id<>$2', [emailNorm, id]);
-    if (conflict.rowCount > 0) return res.status(409).json({ error: 'Email já cadastrado' });
-    fields.push(`email = $${idx++}`);
-    values.push(emailNorm);
+    const conflict = await pool.query("SELECT 1 FROM users WHERE email=$1 AND id<>$2", [emailNorm, id]);
+    if (conflict.rowCount > 0) return res.status(409).json({ error: "Email já cadastrado" });
+    fields.push(`email = $${idx++}`); values.push(emailNorm);
   }
-  if (typeof req.body.password === 'string') {
+  if (typeof req.body.password === "string") {
     const password_hash = await argon2.hash(req.body.password);
-    fields.push(`password_hash = $${idx++}`);
-    values.push(password_hash);
+    fields.push(`password_hash = $${idx++}`); values.push(password_hash);
   }
-  if (req.user.role === 'admin' && typeof req.body.role === 'string') {
-    fields.push(`role = $${idx++}`);
-    values.push(req.body.role);
-  }
-
-  if (fields.length === 0) return res.status(400).json({ error: 'Nada para atualizar' });
+  if (req.user.role === "admin" && typeof req.body.role === "string") { fields.push(`role = $${idx++}`); values.push(req.body.role); }
+  if (fields.length === 0) return res.status(400).json({ error: "Nada para atualizar" });
   fields.push(`updated_at = NOW()`);
-
   const sql = `
     UPDATE users
-       SET ${fields.join(', ')}
+       SET ${fields.join(", ")}
      WHERE id = $${idx}
      RETURNING id, name, email, role, created_at, updated_at
   `;
   values.push(id);
-
-  const result = await query(sql, values);
-  if (result.rowCount === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
+  const result = await pool.query(sql, values);
+  if (result.rowCount === 0) return res.status(404).json({ error: "Usuário não encontrado" });
   return res.json(result.rows[0]);
 });
 
-router.delete('/:id', authRequired, async (req, res) => {
+router.delete("/:id", authRequired, async (req, res) => {
   const { id } = req.params;
-  if (!isUuid(id)) return res.status(400).json({ error: 'id inválido (UUID esperado)' });
-
-  if (req.user.role !== 'admin' && req.user.sub !== id) {
-    return res.status(403).json({ error: 'Você só pode deletar sua própria conta' });
-  }
-  const result = await query('DELETE FROM users WHERE id=$1 RETURNING id', [id]);
-  if (result.rowCount === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
+  if (!isUuid(id)) return res.status(400).json({ error: "id inválido (UUID esperado)" });
+  if (req.user.role !== "admin" && req.user.sub !== id) return res.status(403).json({ error: "Você só pode deletar sua própria conta" });
+  const result = await pool.query("DELETE FROM users WHERE id=$1 RETURNING id", [id]);
+  if (result.rowCount === 0) return res.status(404).json({ error: "Usuário não encontrado" });
   return res.status(204).send();
 });
 

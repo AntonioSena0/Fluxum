@@ -12,7 +12,7 @@ export default function ResetPassword() {
   const token = sp.get("token") || "";
   const navigate = useNavigate();
 
-  const [valid, setValid] = useState(null); // null | true | false
+  const [valid, setValid] = useState(null);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [err, setErr] = useState("");
@@ -22,8 +22,12 @@ export default function ResetPassword() {
     let alive = true;
     (async () => {
       try {
-        const r = await fetch(`/api/auth/reset-password/validate?token=${encodeURIComponent(token)}`);
-        const j = await r.json();
+        const API = import.meta.env.VITE_API_URL || "";
+        const r = await fetch(
+          `${API}/api/auth/reset-password/validate?token=${encodeURIComponent(token)}`,
+          { credentials: "include" }
+        );
+        const j = await r.json().catch(() => ({ valid: false }));
         if (!alive) return;
         setValid(!!j.valid);
       } catch {
@@ -31,7 +35,9 @@ export default function ResetPassword() {
         setValid(false);
       }
     })();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, [token]);
 
   async function handleChange() {
@@ -43,8 +49,10 @@ export default function ResetPassword() {
 
     setLoading(true);
     try {
-      const r = await fetch("/api/auth/reset-password", {
+      const API = import.meta.env.VITE_API_URL || "";
+      const r = await fetch(`${API}/api/auth/reset-password`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password: pw, confirmPassword: cf }),
       });
@@ -68,9 +76,7 @@ export default function ResetPassword() {
           <img src={Logo} alt="Logo" className="mt-0" />
         </Link>
 
-        <h1 className="w-58 text-4xl font-bold text-azulEscuro">
-          Redefinir senha
-        </h1>
+        <h1 className="w-58 text-4xl font-bold text-azulEscuro">Redefinir senha</h1>
         <p className="text-roxo text-sm w-80">
           {valid === false
             ? "Link inválido ou expirado. Solicite novamente."
@@ -123,10 +129,7 @@ export default function ResetPassword() {
         )}
 
         {valid === false && (
-          <Link
-            to="/Login"
-            className="underline text-roxo hover:text-azulEscuro text-sm mt-2"
-          >
+          <Link to="/Login" className="underline text-roxo hover:text-azulEscuro text-sm mt-2">
             Voltar ao login
           </Link>
         )}

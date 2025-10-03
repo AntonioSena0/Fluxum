@@ -1,4 +1,3 @@
-// routes/auth.routes.js
 const express = require('express');
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
@@ -14,10 +13,8 @@ const { sendPasswordReset } = require('../services/mailer');
 
 const RESET_EXPIRES_MIN = parseInt(process.env.RESET_EXPIRES_MIN || '30', 10);
 
-
 const RAW_FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 const FRONTEND_URLS = RAW_FRONTEND_URL.split(',').map(s => s.trim()).filter(Boolean);
-
 
 function pickFrontendBase(req) {
   const origin = String(req.headers.origin || '').trim();
@@ -31,7 +28,7 @@ const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES || '15m';
 const REFRESH_EXPIRES_DAYS = parseInt(process.env.REFRESH_EXPIRES_DAYS || '30', 10);
 
 function signAccessToken(user) {
-  return jwt.sign({ sub: user.id, role: user.role }, ACCESS_SECRET, { expiresIn: ACCESS_EXPIRES });
+  return jwt.sign({ sub: user.id, role: user.role, account_id: user.account_id, email: user.email }, ACCESS_SECRET, { expiresIn: ACCESS_EXPIRES });
 }
 
 function refreshCookieOpts(req) {
@@ -78,7 +75,6 @@ async function rotateRefresh(oldRow) {
 }
 
 
-// Registro
 router.post('/register', registerValidator, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -90,26 +86,53 @@ router.post('/register', registerValidator, async (req, res) => {
   if (exists.rowCount > 0) return res.status(409).json({ error: 'Email já cadastrado' });
 
   const password_hash = await argon2.hash(password);
-  const insert = await query(
-    `INSERT INTO users (name, email, password_hash)
-     VALUES ($1, $2, $3)
-     RETURNING id, name, email, role, created_at, updated_at`,
-    [name, emailNorm, password_hash]
-  );
-  const user = insert.rows[0];
 
-  return res.status(201).json({ user });
+  try {
+    await query('BEGIN');
+
+    const acc = await query(
+      `INSERT INTO accounts (name)
+       VALUES ($1)
+       RETURNING id, name`,
+      [name.trim() || 'Conta']
+    );
+    const account = acc.rows[0];
+
+    const insert = await query(
+  `INSERT INTO users (name, email, password_hash, account_id)
+   VALUES ($1, $2, $3, $4)
+   RETURNING id, name, email, role, account_id`,
+  [name, emailNorm, password_hash, account.id]
+);
+
+    const user = insert.rows[0];
+
+    const accessToken = signAccessToken(user);
+    const familyId = uuid();
+    const refreshToken = await createRefresh(user.id, familyId);
+
+    await query('COMMIT');
+
+    res.cookie('refreshToken', refreshToken, refreshCookieOpts(req));
+    return res.status(201).json({ user, accessToken, refreshToken });
+  } catch (e) {
+  await query('ROLLBACK').catch(() => {});
+  console.error('REGISTER ERROR:', e); // <— adicione isso
+  return res.status(500).json({ error: 'Erro ao registrar', detail: String(e?.message || e) });
+}
+
 });
 
-
-// Login
+/**
+ * LOGIN
+ */
 router.post('/login', loginValidator, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   const emailNorm = String(req.body.email).trim().toLowerCase();
   const result = await query(
-    'SELECT id, name, email, password_hash, role FROM users WHERE email=$1',
+    'SELECT id, name, email, password_hash, role, account_id FROM users WHERE email=$1',
     [emailNorm]
   );
   if (result.rowCount === 0) return res.status(401).json({ error: 'Credenciais inválidas' });
@@ -127,7 +150,9 @@ router.post('/login', loginValidator, async (req, res) => {
   return res.json({ user, accessToken, refreshToken });
 });
 
-// Forgot password
+/**
+ * FORGOT PASSWORD
+ */
 router.post('/forgot-password', async (req, res) => {
   const email = String(req.body?.email || '').trim().toLowerCase();
   const okResp = () => res.status(202).json({ message: 'Se o e-mail existir, enviaremos instruções.' });
@@ -168,7 +193,9 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-// Reset password
+/**
+ * RESET PASSWORD
+ */
 router.post('/reset-password', async (req, res) => {
   const token = String(req.body?.token || '');
   const newPassword = String(req.body?.password || '');
@@ -214,7 +241,9 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
-// Validate reset token
+/**
+ * VALIDATE RESET TOKEN
+ */
 router.get('/reset-password/validate', async (req, res) => {
   const token = String(req.query?.token || '');
   if (!token) return res.status(400).json({ valid: false });
@@ -229,7 +258,9 @@ router.get('/reset-password/validate', async (req, res) => {
   return res.json({ valid });
 });
 
-// Refresh
+/**
+ * REFRESH
+ */
 router.post('/refresh', async (req, res) => {
   const token = getRefreshFromReq(req);
   if (!token) return res.status(401).json({ error: 'Refresh ausente' });
@@ -244,7 +275,7 @@ router.post('/refresh', async (req, res) => {
     return res.status(401).json({ error: 'Refresh expirado' });
   }
 
-  const uq = await query('SELECT id, name, email, role FROM users WHERE id=$1', [row.user_id]);
+  const uq = await query('SELECT id, name, email, role, account_id FROM users WHERE id=$1', [row.user_id]);
   if (uq.rowCount === 0) return res.status(401).json({ error: 'Usuário não encontrado' });
   const user = uq.rows[0];
 
@@ -255,7 +286,9 @@ router.post('/refresh', async (req, res) => {
   return res.json({ accessToken, refreshToken: newRefresh });
 });
 
-// Logout
+/**
+ * LOGOUT
+ */
 router.post('/logout', async (req, res) => {
   const token = getRefreshFromReq(req);
   if (token) {

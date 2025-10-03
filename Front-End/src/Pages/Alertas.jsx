@@ -55,7 +55,7 @@ const Alertas = () => {
   const abas = ["Todos", "Pendentes", "Resolvidos"];
 
   const carregar = useCallback(async () => {
-     const rows = await apiFetch("/api/v1/alerts?limit=200");
+    const rows = await apiFetch("/api/v1/alerts?limit=200", { auth: true });
     const mapped = (rows || []).map((r) => {
       const pendente = !r.acknowledged_at;
       return {
@@ -80,9 +80,7 @@ const Alertas = () => {
       try {
         if (!alive) return;
         await carregar();
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (err){console.warn(err)}
     })();
     return () => { alive = false; };
   }, [carregar]);
@@ -92,16 +90,26 @@ const Alertas = () => {
     if (!alvo || resolvendoId) return;
     setResolvendoId(id);
     try {
-      await apiFetch(`/api/v1/alerts/${id}/ack`, { method: "PATCH" });
+      await apiFetch(`/api/v1/alerts/${id}/ack`, { method: "PATCH", auth: true });
       setAlertas((prev) =>
         prev.map((a) =>
           a.id === id ? { ...a, tipo: "Resolvidos", acao: "Concluído" } : a
         )
       );
       if (alertaSelecionado?.id === id) setAlertaSelecionado(null);
-    } catch (e) {
-      console.error(e);
-    } finally {
+    } catch (err){console.warn(err)} finally {
+      setResolvendoId(null);
+    }
+  }
+
+  async function excluirAlerta(id) {
+    if (!id || resolvendoId) return;
+    setResolvendoId(id);
+    try {
+      await apiFetch(`/api/v1/alerts/${id}`, { method: "DELETE", auth: true });
+      setAlertas((prev) => prev.filter((a) => a.id !== id));
+      if (alertaSelecionado?.id === id) setAlertaSelecionado(null);
+    } catch  (err){console.warn(err)} finally {
       setResolvendoId(null);
     }
   }
@@ -206,7 +214,13 @@ const Alertas = () => {
             >
               {resolvendoId === alertaSelecionado.id ? "Salvando..." : alertaSelecionado.acao === "Marcar como concluída" ? "Marcar como concluída" : "Fechar"}
             </button>
-            <button onClick={() => setAlertaSelecionado(null)} className="w-full mt-2 px-4 py-2 bg-violeta border-2 border-violeta text-white rounded-[35px] hover:bg-transparent hover:text-violeta hover:border-2 duration-300">Fechar</button>
+            <button
+              onClick={() => excluirAlerta(alertaSelecionado.id)}
+              disabled={resolvendoId === alertaSelecionado.id}
+              className="w-full mt-2 px-4 py-2 bg-violeta border-2 border-violeta text-white rounded-[35px] hover:bg-transparent hover:text-violeta hover:border-2 duration-300"
+            >
+              Excluir
+            </button>
           </div>
         </>
       )}

@@ -16,7 +16,7 @@ const DetalheNavio = () => {
   useEffect(() => {
     let live = true;
     if (!id) { setLoading(false); return; }
-    apiFetch(`/api/v1/ships/${id}`)
+    apiFetch(`/api/v1/ships/${id}`, { auth: true })
       .then(r => { if (live) setShip(r || null); })
       .finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
