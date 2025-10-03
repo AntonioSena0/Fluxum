@@ -13,7 +13,7 @@ function isUuid(v) {
 
 router.get('/me', authRequired, async (req, res) => {
   try {
-    // ATENÇÃO: users.id é UUID → passe a string do req.user.id
+   
     const { rows } = await pool.query(
       `SELECT id, name, email, role, account_id, created_at, updated_at
          FROM users

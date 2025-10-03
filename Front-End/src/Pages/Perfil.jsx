@@ -66,25 +66,31 @@ export default function Perfil() {
   };
 
   async function handleSave(e) {
-    e.preventDefault();
-    if (saving) return;
-    setSaving(true);
-    try {
-      const me = await apiFetch("/api/users/me");
-      const id = me?.id;
-      if (!id) throw new Error("Usuário não identificado");
-      const fd = new FormData(formRef.current);
-      const payload = { name: fd.get("profileName")?.trim() || undefined };
-      const newPass = fd.get("newPassword")?.trim();
-      if (newPass) payload.password = newPass;
-      await apiFetch(`/api/users/${id}`, { method: "PATCH", body: payload });
-      alert("Dados salvos!");
-    } catch (err) {
-      alert(err.message || "Falha ao salvar");
-    } finally {
-      setSaving(false);
+  e.preventDefault();
+  if (saving) return;
+  setSaving(true);
+  try {
+    let id = user?.id || user?.sub;
+    if (!id) {
+      const me = await apiFetch("/api/users/me", { auth: true });
+      id = me?.id;
     }
+    if (!id) throw new Error("Usuário não identificado");
+
+    const fd = new FormData(formRef.current);
+    const payload = { name: (fd.get("profileName") || "").trim() || undefined };
+    const newPass = (fd.get("newPassword") || "").trim();
+    if (newPass) payload.password = newPass;
+
+    await apiFetch(`/api/users/${id}`, { method: "PATCH", auth:true ,body: payload });
+    alert("Dados salvos!");
+  } catch (err) {
+    alert(err.message || "Falha ao salvar");
+  } finally {
+    setSaving(false);
   }
+}
+
 
   return (
     <div className="min-h-screen w-full bg-deletar flex flex-row">
