@@ -91,14 +91,16 @@ const Navios = () => {
             />
             <img src={Pesquisa} alt="Pesquisar" className="w-5 h-5 absolute ml-6 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
-          <button type="button" onClick={() => navigate("/FormNavio")} className="bg-[#ECF2F9] mb-6 text-azulEscuro text-[12px] font-medium px-6 py-2 rounded-full hover:bg-white duration-300 cursor-pointer">
-            Adicionar Navio
-          </button>
+          
         </div>
 
         <div className="bg-white rounded-xl flex flex-col px-4 md:px-8 py-6">
           <div className="flex justify-between items-center">
+            
             <h2 className="text-xl font-GT mb-8">Gerenciamento de Navios</h2>
+            <button type="button" onClick={() => navigate("/FormNavio")} className="bg-[#ECF2F9] mb-6 text-azulEscuro text-[12px] font-medium px-6 py-2 rounded-full hover:bg-white duration-300 cursor-pointer">
+            Adicionar Navio
+          </button>
           </div>
 
           <div className="bg-[#ECF2F9] flex overflow-x-auto scrollbar-hide rounded-full w-1/2 h-12 mb-6 gap-1">

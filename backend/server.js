@@ -193,13 +193,27 @@ v1Alias.use("/alerts", v1Alerts);
 v1Alias.use("/dashboard", v1Dashboard);
 app.use("/api", v1Alias);
 
-async function pruneOldAlerts() {
+// server.js
+
+async function pruneOldAlerts(days) {
+  const sql = `delete from alerts where created_at < now() - ($1 || '7 days')::interval returning id`;
   try {
-    await pool.query(`delete from alerts where created_at < now() - interval '1 minute'`);
-  } catch {}
+    const r = await pool.query(sql, [String(days)]);
+    console.log(`[pruneOldAlerts] removed=${r.rowCount} older_than_days=${days}`);
+  } catch (e) {
+    console.error("pruneOldAlerts error:", e);
+  }
 }
-setInterval(pruneOldAlerts, 60 * 1000);
-pruneOldAlerts();
+
+const PRUNE_DAYS = Number(process.env.ALERTS_PRUNE_DAYS || 0); 
+if (PRUNE_DAYS > 0) {
+  
+  setInterval(() => pruneOldAlerts(PRUNE_DAYS), 60 * 60 * 1000);
+  pruneOldAlerts(PRUNE_DAYS); 
+} else {
+  console.log("[pruneOldAlerts] disabled (ALERTS_PRUNE_DAYS=0)");
+}
+
 
 
 app.use((req, res) => res.status(404).json({ error: "Not Found" }));

@@ -46,6 +46,24 @@ function titleFromRow(r) {
   return `${base} ${id}`;
 }
 
+function severityPt(n) {
+  const s = Number(n);
+  if (s <= 1) return "Baixa";
+  if (s === 2) return "Média";
+  return "Alta";
+}
+
+function humanizeAlert(r) {
+  const t = String(r.alert_type || "").toUpperCase();
+  if (r.message && r.message.trim()) return r.message.trim();
+  if (t.includes("TEMP")) return "Temperatura acima do limite";
+  if (t === "ROUTE_DEVIATION") return "Desvio de rota detectado";
+  if (t === "DOOR_OPEN") return "Abertura de porta detectada";
+  if (t.includes("BAT")) return "Nível de bateria baixo";
+  return "Alerta gerado pelo sistema";
+}
+
+
 const Alertas = () => {
   const [abaSelecionada, setAbaSelecionada] = useState("Todos");
   const [pesquisa, setPesquisa] = useState("");
@@ -54,25 +72,37 @@ const Alertas = () => {
   const [resolvendoId, setResolvendoId] = useState(null);
   const abas = ["Todos", "Pendentes", "Resolvidos"];
 
-  const carregar = useCallback(async () => {
-    const rows = await apiFetch("/api/v1/alerts?limit=200", { auth: true });
-    const mapped = (rows || []).map((r) => {
-      const pendente = !r.acknowledged_at;
-      return {
-        id: r.id,
-        icone: iconForType(r.alert_type, r.message || ""),
-        titulo: titleFromRow(r),
-        tempo: timeAgo(r.created_at),
-        acao: pendente ? "Marcar como concluída" : "Concluído",
-        tipo: pendente ? "Pendentes" : "Resolvidos",
-        containerId: r.container_id || "—",
-        containerNome: r.container_id || "—",
-        iotNome: "IoT",
-        raw: r
-      };
-    });
-    setAlertas(mapped);
-  }, []);
+const carregar = useCallback(async () => {
+  const rows = await apiFetch("/api/v1/alerts?limit=200", { auth: true });
+  const mapped = (rows || []).map((r) => {
+    const pendente = !r.acknowledged_at;
+    const severidade = r.severity_label || severityPt(r.severity);
+    const descricao = r.human_message || humanizeAlert(r);
+
+    return {
+      id: r.id,
+      icone: iconForType(r.alert_type, r.message || ""),
+      titulo: titleFromRow(r),
+      tempo: timeAgo(r.created_at),
+      acao: pendente ? "Marcar como concluída" : "Concluído",
+      tipo: pendente ? "Pendentes" : "Resolvidos",
+      containerId: r.container_id || "—",
+      containerNome: r.container_id || "—",
+      iotNome: "IoT",
+
+     
+      navioNome: r.ship_name || "—",
+      containerTipo: r.container_type || "—",
+      containerOwner: r.container_owner || "—",
+      severidade,
+      descricao,
+
+      raw: r
+    };
+  });
+  setAlertas(mapped);
+}, []);
+
 
   useEffect(() => {
     let alive = true;
@@ -193,37 +223,45 @@ const Alertas = () => {
         </div>
       </div>
 
-      {alertaSelecionado && (
-        <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40" onClick={() => setAlertaSelecionado(null)}></div>
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl p-6 z-50 w-full max-w-md shadow-lg">
-            <div className="flex">
-              <img src={Livro} alt="icone livro" className="w-6 h-6 -ml-1 mr-4" />
-              <h2 className="text-xl text-azulEscuro font-GT mb-6">Detalhes do Alerta</h2>
-            </div>
-            <p><strong className="font-GT text-azulEscuro">ID do Container:</strong> {alertaSelecionado.containerId}</p>
-            <p><strong className="font-GT text-azulEscuro">Nome do Container:</strong> {alertaSelecionado.containerNome}</p>
-            <p><strong className="font-GT text-azulEscuro">IoT:</strong> {alertaSelecionado.iotNome}</p>
-            <button
-              onClick={() => {
-                if (alertaSelecionado.acao === "Marcar como concluída") concluirAlerta(alertaSelecionado.id);
-                else setAlertaSelecionado(null);
-              }}
-              disabled={resolvendoId === alertaSelecionado.id}
-              className={`w-full mt-4 px-4 py-2 bg-[#3BB61F] border-2 border-[#3BB61F] text-white rounded-[35px] hover:bg-transparent hover:text-[#3BB61F] duration-300 ${resolvendoId === alertaSelecionado.id ? "opacity-60 cursor-not-allowed" : ""}`}
-            >
-              {resolvendoId === alertaSelecionado.id ? "Salvando..." : alertaSelecionado.acao === "Marcar como concluída" ? "Marcar como concluída" : "Fechar"}
-            </button>
-            <button
-              onClick={() => excluirAlerta(alertaSelecionado.id)}
-              disabled={resolvendoId === alertaSelecionado.id}
-              className="w-full mt-2 px-4 py-2 bg-violeta border-2 border-violeta text-white rounded-[35px] hover:bg-transparent hover:text-violeta hover:border-2 duration-300"
-            >
-              Excluir
-            </button>
-          </div>
-        </>
-      )}
+    {alertaSelecionado && (
+  <>
+    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40" onClick={() => setAlertaSelecionado(null)}></div>
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl p-6 z-50 w-full max-w-md shadow-lg">
+      <div className="flex">
+        <img src={Livro} alt="icone livro" className="w-6 h-6 -ml-1 mr-4" />
+        <h2 className="text-xl text-azulEscuro font-GT mb-6">Detalhes do Alerta</h2>
+      </div>
+
+      <p><strong className="font-GT text-azulEscuro">ID do Container:</strong> {alertaSelecionado.containerId}</p>
+      <p><strong className="font-GT text-azulEscuro">Tipo do Container:</strong> {alertaSelecionado.containerTipo}</p>
+      <p><strong className="font-GT text-azulEscuro">Proprietário do Container:</strong> {alertaSelecionado.containerOwner}</p>
+      <p><strong className="font-GT text-azulEscuro">Navio (via IMO):</strong> {alertaSelecionado.navioNome}</p>
+      <p><strong className="font-GT text-azulEscuro">Severidade:</strong> {alertaSelecionado.severidade}</p>
+      <p><strong className="font-GT text-azulEscuro">Descrição:</strong> {alertaSelecionado.descricao}</p>
+      <p><strong className="font-GT text-azulEscuro">IoT:</strong> {alertaSelecionado.iotNome}</p>
+
+      <button
+        onClick={() => {
+          if (alertaSelecionado.acao === "Marcar como concluída") concluirAlerta(alertaSelecionado.id);
+          else setAlertaSelecionado(null);
+        }}
+        disabled={resolvendoId === alertaSelecionado.id}
+        className={`w-full mt-4 px-4 py-2 bg-[#3BB61F] border-2 border-[#3BB61F] text-white rounded-[35px] hover:bg-transparent hover:text-[#3BB61F] duration-300 ${resolvendoId === alertaSelecionado.id ? "opacity-60 cursor-not-allowed" : ""}`}
+      >
+        {resolvendoId === alertaSelecionado.id ? "Salvando..." : alertaSelecionado.acao === "Marcar como concluída" ? "Marcar como concluída" : "Fechar"}
+      </button>
+
+      <button
+        onClick={() => excluirAlerta(alertaSelecionado.id)}
+        disabled={resolvendoId === alertaSelecionado.id}
+        className="w-full mt-2 px-4 py-2 bg-violeta border-2 border-violeta text-white rounded-[35px] hover:bg-transparent hover:text-violeta hover:border-2 duration-300"
+      >
+        Excluir
+      </button>
+    </div>
+  </>
+)}
+
     </div>
   );
 };

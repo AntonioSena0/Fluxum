@@ -35,7 +35,7 @@ router.post('/ships', authRequired, async (req, res) => {
       to_port, eta_date, departure_at, active
     } = req.body || {};
 
-    if (!name) return res.status(400).json({ error: 'name é obrigatório' });
+    if (!name) return res.status(400).json({ error: 'nome é obrigatório' });
 
     const { rows } = await pool.query(
       `INSERT INTO ships (
@@ -117,7 +117,7 @@ router.put('/ships/:id', authRequired, async (req, res) => {
     } = req.body || {};
 
     if (typeof name !== 'string' || !name.trim()) {
-      return res.status(400).json({ error: 'name é obrigatório' });
+      return res.status(400).json({ error: 'nome é obrigatório' });
     }
 
     const params = [
