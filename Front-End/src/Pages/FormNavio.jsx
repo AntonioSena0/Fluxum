@@ -128,7 +128,7 @@ const FormNavio = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-6">
-            <button type="button" onClick={() => navigate("/Navio")} className="w-full sm:w-36 h-10 rounded-xl font-medium text-[14px] bg-[#ECF2F9] text-[#5B61B3] hover:bg-slate-200 duration-300">Voltar</button>
+            <button type="button" onClick={() => navigate("/Navios")} className="w-full sm:w-36 h-10 rounded-xl font-medium text-[14px] bg-[#ECF2F9] text-[#5B61B3] hover:bg-slate-200 duration-300">Voltar</button>
             <button type="submit" className="w-full sm:w-36 h-10 rounded-xl font-medium bg-violeta text-white text-[14px] hover:bg-roxo duration-300">Cadastrar</button>
           </div>
         </form>

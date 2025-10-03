@@ -22,42 +22,47 @@ const EditarNavio = () => {
   const navigate = useNavigate();
   const [sp] = useSearchParams();
   const id = sp.get("id");
-  const [formData, setFormData] = useState({
-    idCod: "",
-    nome: "",
-    capacidade: "",
-    navio: "",
-    container: "",
-    sensores: { temperatura: false, umidade: false, movimento: false, localizacao: false },
-    ativo: false,
-    bandeira: "",
-    status: "",
-    origem: "",
-    destino: "",
-    saida: "",
-    eta: ""
-  });
+  // estado inicial (deixa ativo false como default, tudo certo)
+const [formData, setFormData] = useState({
+  idCod: "",
+  nome: "",
+  capacidade: "",
+  navio: "",
+  container: "",
+  sensores: { temperatura: false, umidade: false, movimento: false, localizacao: false },
+  ativo: false,            
+  bandeira: "",
+  status: "",
+  origem: "",
+  destino: "",
+  saida: "",
+  eta: ""
+});
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     let live = true;
     if (!id) { setLoading(false); return; }
-    apiFetch(`/api/v1/ships/${id}`, { auth:true })
-      .then(r => {
-        if (!live) return;
-        setFormData(s => ({
-          ...s,
-          idCod: r?.imo || "",
-          nome: r?.name || "",
-          bandeira: r?.flag || "",
-          status: r?.status || "",
-          origem: r?.from_port || "",
-          destino: r?.to_port || "",
-          saida: r?.departure_at ? String(r.departure_at).slice(0,16) : "",
-          eta: r?.eta_date ? String(r.eta_date).slice(0,10) : ""
-        }));
-      })
+   // ao carregar o navio
+apiFetch(`/api/v1/ships/${id}`, { auth:true })
+  .then(r => {
+    if (!live) return;
+    setFormData(s => ({
+      ...s,
+      idCod: r?.imo || "",
+      nome: r?.name || "",
+      bandeira: r?.flag || "",
+      status: r?.status || "",
+      origem: r?.from_port || "",
+      destino: r?.to_port || "",
+      saida: r?.departure_at ? String(r.departure_at).slice(0,16) : "",
+      eta: r?.eta_date ? String(r.eta_date).slice(0,10) : "",
+      ativo: r?.active === true     // <<< pega do backend
+    }));
+  })
+
       .finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
   }, [id]);
@@ -72,20 +77,23 @@ const EditarNavio = () => {
     if (!id) return;
     setSaving(true);
     try {
-      await apiFetch(`/api/v1/ships/${id}`, {
-        method: "PUT",
-        auth:true,
-        body: {
-          name: formData.nome,
-          imo: formData.idCod,
-          flag: formData.bandeira,
-          status: formData.status,
-          from_port: formData.origem,
-          to_port: formData.destino,
-          eta_date: formData.eta,
-          departure_at: formData.saida ? new Date(formData.saida).toISOString() : null
-        }
-      });
+     await apiFetch(`/api/v1/ships/${id}`, {
+  method: "PUT",
+  auth: true,
+  body: {
+    name: formData.nome,
+    imo: formData.idCod,
+    flag: formData.bandeira,
+    status: formData.status,
+    from_port: formData.origem,
+    to_port: formData.destino,
+    eta_date: formData.eta || null, 
+    departure_at: formData.saida ? new Date(formData.saida).toISOString() : null,
+    active: Boolean(formData.ativo)
+  }
+});
+
+
       navigate(`/DetalhesNavio?id=${id}`);
     } catch (e2) {
       alert(e2.message || "Erro ao salvar");
@@ -93,6 +101,12 @@ const EditarNavio = () => {
       setSaving(false);
     }
   }
+
+  // handler para toggle
+function handleToggleAtivo() {
+  setFormData(prev => ({ ...prev, ativo: !prev.ativo }));
+}
+
 
   if (loading) return <div className="min-h-screen w-full bg-deletar flex flex-row"><Sidebar2 /><div className="flex-1 p-6">Carregando...</div></div>;
 
@@ -148,6 +162,18 @@ const EditarNavio = () => {
               <input type="date" name="eta" value={formData.eta} onChange={handleChange} className="h-12 w-full rounded-xl bg-[#F4F7FB] px-4 text-[13px] text-roxo focus:outline-none focus:ring-2 focus:ring-violeta" />
             </div>
           </div>
+
+          <div className="mb-12">
+  <p className="text-sm mb-6 text-azulEscuro">Ativo</p>
+  <button
+    type="button"
+    onClick={handleToggleAtivo}
+    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${formData.ativo ? "bg-violeta" : "bg-[#ECF2F9]"}`}
+  >
+    <div className={`bg-white w-4 h-4 rounded-full transform transition-transform ${formData.ativo ? "translate-x-6" : ""}`}></div>
+  </button>
+</div>
+
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-6">
             <button type="button" onClick={() => navigate(`/DetalhesNavio?id=${id}`)} className="w-full sm:w-36 h-10 rounded-xl font-medium text-[14px] bg-[#ECF2F9] text-[#5B61B3] hover:bg-slate-200 duration-300">Voltar</button>

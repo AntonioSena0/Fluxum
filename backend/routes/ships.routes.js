@@ -72,10 +72,10 @@ router.post('/ships', authRequired, async (req, res) => {
   }
 });
 
-// BUSCAR POR ID  <<< ADICIONE ISSO
+
 router.get('/ships/:id', authRequired, async (req, res) => {
   try {
-    const account_id = req.account_id; // BIGINT
+    const account_id = req.account_id;
     const id = Number(req.params.id);
     if (!Number.isInteger(id)) {
       return res.status(400).json({ error: 'id inválido (inteiro esperado)' });
@@ -83,10 +83,10 @@ router.get('/ships/:id', authRequired, async (req, res) => {
 
     const { rows } = await pool.query(
       `SELECT
-         ship_id, account_id, name, imo, flag, status,
-         from_port, to_port, eta_date, departure_at,
-         capacity, active, created_at
-       FROM ships
+  ship_id, account_id, name, imo, flag, status,
+  from_port, to_port, eta_date, departure_at,
+  capacity, active, created_at, updated_at
+FROM ships
        WHERE ship_id = $1 AND account_id = $2
        LIMIT 1`,
       [id, account_id]
@@ -99,5 +99,74 @@ router.get('/ships/:id', authRequired, async (req, res) => {
     res.status(500).json({ error: 'Erro ao buscar ship' });
   }
 });
+
+
+// ATUALIZAR (PUT) /api/v1/ships/:id
+router.put('/ships/:id', authRequired, async (req, res) => {
+  try {
+    const account_id = req.account_id;
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id)) return res.status(400).json({ error: 'id inválido (inteiro esperado)' });
+
+    const {
+      name, imo, flag, status, from_port, to_port,
+      eta_date,       
+      departure_at,   
+      capacity,
+      active
+    } = req.body || {};
+
+    if (typeof name !== 'string' || !name.trim()) {
+      return res.status(400).json({ error: 'name é obrigatório' });
+    }
+
+    const params = [
+      name.trim(),                 
+      imo ?? null,                
+      flag ?? null,               
+      status ?? null,             
+      from_port ?? null,          
+      to_port ?? null,             
+      eta_date ?? null,           
+      departure_at ?? null,
+      (typeof capacity === 'number' ? capacity : null), 
+      (active === false ? false : active === true ? true : null),
+      account_id,                  
+      id                           
+    ];
+
+    const { rows } = await pool.query(
+      `UPDATE ships
+          SET name         = $1,
+              imo          = NULLIF($2,''),
+              flag         = NULLIF($3,''),
+              status       = NULLIF($4,''),
+              from_port    = NULLIF($5,''),
+              to_port      = NULLIF($6,''),
+              eta_date     = NULLIF($7,'')::date,
+              departure_at = NULLIF($8,'')::timestamptz,
+              capacity     = $9,
+              active       = COALESCE($10, active)
+        WHERE account_id = $11 AND ship_id = $12
+       RETURNING
+  ship_id, account_id, name, imo, flag, status,
+  from_port, to_port, eta_date, departure_at,
+  capacity, active, created_at, updated_at
+`,
+      params
+    );
+
+    if (rows.length === 0) return res.status(404).json({ error: 'Navio não encontrado' });
+    return res.json(rows[0]);
+  } catch (e) {
+    if (e && e.code === '23505') {
+      return res.status(409).json({ error: 'IMO já cadastrado para esta conta' });
+    }
+    console.error('[PUT /ships/:id] error:', e);
+    return res.status(500).json({ error: 'Erro ao atualizar ship' });
+  }
+});
+
+
 
 module.exports = router;
