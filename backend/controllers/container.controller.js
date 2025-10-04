@@ -20,26 +20,35 @@ exports.create = async (req, res) => {
     const account_id = req.account_id;
     const body = req.body || {};
 
-    // normaliza ID (tira hífen/espaço e uppercase)
+    // 1) leia o valor bruto (id ou container_id)
     const rawId = String(body.id || body.container_id || '').trim();
+    if (!rawId) {
+      return res.status(400).json({ error: 'Campo "id" (container_id) é obrigatório.' });
+    }
+
+    // 2) normalize (tira hífen/espaço e uppercase)
     const id = normalizeContainerId(rawId);
 
+    // 3) valida ISO 6346: 4 letras + 7 dígitos
+    if (!isContainerId(id)) {
+      return res.status(400).json({
+        error: 'container_id inválido. Use o formato ISO 6346: 4 letras + 7 dígitos (ex.: MSCU1234567).'
+      });
+    }
+
+    // 4) demais campos
     const imo  = body.imo ? String(body.imo).trim() : '';
-    let owner  = body.owner ? String(body.owner).trim() : null;  // ← pode vir vazio
+    let owner  = body.owner ? String(body.owner).trim() : null;
     const container_type = body.container_type ? String(body.container_type).trim() : null;
     const description    = body.description ? String(body.description).trim() : null;
 
-    if (!isContainerId(id)) {
-      return res.status(400).json({ error: 'Campo "id" (container_id) é obrigatório.' });
-    }
     if (!imo) {
       return res.status(400).json({ error: 'Campo "imo" é obrigatório.' });
     }
 
-    
     if (!owner) owner = deriveOwnerFromContainerId(id);
 
-    
+    // 5) FK: ship precisa existir para (account_id, imo)
     const ship = await client.query(
       `SELECT ship_id FROM public.ships WHERE account_id=$1 AND imo=$2 LIMIT 1`,
       [account_id, imo]
@@ -48,6 +57,7 @@ exports.create = async (req, res) => {
       return res.status(400).json({ error: 'Não existe navio com esse IMO nesta conta.' });
     }
 
+    // 6) upsert por PK (id)
     const q = await client.query(
       `INSERT INTO public.containers (id, account_id, imo, container_type, owner, description)
        VALUES ($1, $2, $3, $4, $5, $6)
@@ -72,6 +82,7 @@ exports.create = async (req, res) => {
     client.release();
   }
 };
+
 
 exports.list = async (req, res) => {
   try {

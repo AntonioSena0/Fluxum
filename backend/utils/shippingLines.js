@@ -45,7 +45,7 @@ const OWNER_BY_PREFIX = {
 };
 
 function normalizeContainerId(raw = "") {
-  // tira espaços e hífens, upper-case
+  
   return String(raw).toUpperCase().replace(/[-\s]+/g, "");
 }
 

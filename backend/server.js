@@ -8,6 +8,7 @@ const slowDown = require("express-slow-down");
 const { logger, requestId, httpLogger, metricsRoute } = require("./utils/observability");
 const { pool } = require("./database/db");
 const path = require('path');
+const reportsRoutes = require("./routes/reports.routes");
 
 
 
@@ -32,6 +33,7 @@ const voyagesMapRouter = require("./routes/voyages_map.routes");
 
 
 
+
 const app = express();
 app.set("trust proxy", 1);
 
@@ -41,7 +43,12 @@ const FRONTEND_URLS = (process.env.FRONTEND_URL || "http://localhost:5173")
   .filter(Boolean);
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
-app.use(cors({ origin: FRONTEND_URLS, credentials: true }));
+app.use(cors({
+  origin: (process.env.CORS_ORIGINS?.split(",") || ["http://localhost:5173"]),
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"], 
+  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"]
+}));
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 
@@ -164,6 +171,7 @@ app.use("/api/v1", v1GeoContainers);
 app.use("/api/v1", require("./routes/maritime.routes"));
 app.use("/api/v1", voyagesMapRouter);
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use(reportsRoutes);
 
 app.get("/api/v1/live/containers", async (_req, res) => {
   res.set("Cache-Control", "no-store");   // ← impede 304
@@ -195,6 +203,8 @@ const v1Alias = Router();
 v1Alias.use("/alerts", v1Alerts);
 v1Alias.use("/dashboard", v1Dashboard);
 app.use("/api", v1Alias);
+
+
 
 // server.js
 

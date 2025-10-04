@@ -30,7 +30,6 @@ async function rawFetch(path, { method = "GET", body, headers = {}, auth = false
     if (tok) h["Authorization"] = `Bearer ${tok}`;
   }
   const res = await fetch(`${API}${path}`, {
-    
     method,
     headers: h,
     credentials,

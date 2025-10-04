@@ -1,65 +1,95 @@
 
 // controllers/voyages.controller.js
 const { pool } = require('../database/db');
+const { resolvePortCoords } = require('../utils/ports');
 
 exports.create = async (req, res) => {
   const client = await pool.connect();
   try {
-    const {
-      ship_id,
-      ship_imo,
-      voyage_code,
-      departure_port,
-      arrival_port,
-      origin_lat,
-      origin_lng,
-      dest_lat,
-      dest_lng,
-      departure_date,
-      arrival_date
-    } = req.body || {};
+    const account_id = req.account_id;
+    const body = req.body || {};
 
-    let shipId = ship_id ?? null;
-    if (!shipId && ship_imo) {
-      const r = await client.query('SELECT ship_id FROM ships WHERE imo=$1 LIMIT 1', [String(ship_imo)]);
-      if (r.rowCount > 0) shipId = r.rows[0].ship_id;
+    // Entrada
+    const ship_id_in  = body.ship_id ? Number(body.ship_id) : null;
+    const ship_imo    = body.ship_imo ? String(body.ship_imo).trim() : null;
+    const voyage_code = String(body.voyage_code || '').trim();
+    const departure_port = String(body.departure_port || '').trim();
+    const arrival_port   = String(body.arrival_port || '').trim();
+    const departure_date = body.departure_date ? new Date(body.departure_date) : null;
+    const arrival_date   = body.arrival_date ? new Date(body.arrival_date) : null;
+
+    let origin_lat = (typeof body.origin_lat === 'number') ? body.origin_lat : null;
+    let origin_lng = (typeof body.origin_lng === 'number') ? body.origin_lng : null;
+    let dest_lat   = (typeof body.dest_lat   === 'number') ? body.dest_lat   : null;
+    let dest_lng   = (typeof body.dest_lng   === 'number') ? body.dest_lng   : null;
+
+    if (!voyage_code) {
+      return res.status(400).json({ error: 'voyage_code é obrigatório' });
     }
-    if (!shipId) {
-      return res.status(400).json({ error: 'ship_id ou ship_imo é obrigatório' });
+    if (!departure_port || !arrival_port) {
+      return res.status(400).json({ error: 'departure_port e arrival_port são obrigatórios' });
+    }
+    if (!departure_date || !arrival_date) {
+      return res.status(400).json({ error: 'departure_date e arrival_date são obrigatórios' });
     }
 
-    const rIns = await client.query(
-      `INSERT INTO voyages (
-         ship_id, voyage_code, departure_port, arrival_port,
-         origin_lat, origin_lng, dest_lat, dest_lng,
-         departure_date, arrival_date
-       ) VALUES (
-         $1,$2,$3,$4,$5,$6,$7,$8,$9,$10
-       )
+    
+    let ship_id = ship_id_in;
+    if (!ship_id && ship_imo) {
+      const qShip = await client.query(
+        `SELECT ship_id FROM public.ships WHERE account_id=$1 AND imo=$2 LIMIT 1`,
+        [account_id, ship_imo]
+      );
+      if (qShip.rowCount === 0) {
+        return res.status(400).json({ error: 'Navio (ship_imo) não encontrado nesta conta' });
+      }
+      ship_id = qShip.rows[0].ship_id;
+    }
+    if (!ship_id) {
+      return res.status(400).json({ error: 'Informe ship_id ou ship_imo' });
+    }
+
+    
+    if (origin_lat == null || origin_lng == null) {
+      const c = resolvePortCoords(departure_port);
+      if (c) { origin_lat = c.lat; origin_lng = c.lng; }
+    }
+    if (dest_lat == null || dest_lng == null) {
+      const c = resolvePortCoords(arrival_port);
+      if (c) { dest_lat = c.lat; dest_lng = c.lng; }
+    }
+
+
+    const q = await client.query(
+      `INSERT INTO public.voyages
+        (ship_id, voyage_code, departure_port, arrival_port,
+         departure_date, arrival_date, origin_lat, origin_lng, dest_lat, dest_lng, status, created_at)
+       VALUES
+        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10, 'DRAFT', now())
        RETURNING voyage_id, ship_id, voyage_code, departure_port, arrival_port,
                  origin_lat, origin_lng, dest_lat, dest_lng, status, created_at`,
-      [
-        shipId,
-        voyage_code || null,
-        departure_port || null,
-        arrival_port || null,
-        origin_lat ?? null,
-        origin_lng ?? null,
-        dest_lat ?? null,
-        dest_lng ?? null,
-        departure_date ?? null,
-        arrival_date ?? null
-      ]
+      [ship_id, voyage_code, departure_port, arrival_port,
+       departure_date, arrival_date, origin_lat, origin_lng, dest_lat, dest_lng]
     );
 
-    return res.status(201).json(rIns.rows[0]);
+    return res.status(201).json(q.rows[0]);
   } catch (e) {
-    console.error(e);
+   
+    if (e.code === '23505') {
+      
+      return res.status(409).json({ error: 'voyage_code já existe' });
+    }
+    if (e.code === '23503') {
+      
+      return res.status(400).json({ error: 'ship_id inválido ou ship não pertence à conta' });
+    }
+    console.error('[voyages.create] error:', e);
     return res.status(500).json({ error: 'Erro ao criar viagem' });
   } finally {
     client.release();
   }
 };
+
 
 exports.start = async (req, res) => {
   const id = req.params.id;

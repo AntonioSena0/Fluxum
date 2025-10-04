@@ -3,11 +3,20 @@ const jwt = require('jsonwebtoken');
 
 function authRequired(req, res, next) {
   try {
+    // 1) Tenta header Authorization: Bearer <token>
     const h = req.headers.authorization || '';
     const m = h.match(/^Bearer\s+(.+)$/i);
-    if (!m) return res.status(401).json({ error: 'Token ausente' });
+    let token = m ? m[1] : null;
 
-    const payload = jwt.verify(m[1], process.env.JWT_ACCESS_SECRET);
+    // 2) Fallback opcional: se não veio header, tenta cookie (ex.: access_token)
+    //    -> Isto é ADITIVO e não interfere nas rotas que já funcionam com header.
+    if (!token && req.cookies && req.cookies.access_token) {
+      token = req.cookies.access_token;
+    }
+
+    if (!token) return res.status(401).json({ error: 'Token ausente' });
+
+    const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 
     // sub é UUID do usuário; account_id é BIGINT
     const sub = String(payload.sub || '');
