@@ -39,6 +39,8 @@ exports.create = async (req, res) => {
 
 
 
+// backend/controllers/devices.controller.js
+
 exports.attachToContainer = async (req, res) => {
   const containerId = String(req.params.id || '').trim();
   const deviceId = String((req.body && req.body.device_id) || '').trim();
@@ -47,50 +49,55 @@ exports.attachToContainer = async (req, res) => {
 
   const client = await pool.connect();
   try {
+    // Inicia uma transação para garantir que todas as operações funcionem ou nenhuma
     await client.query('BEGIN');
 
+    // 1. Verifica se o container existe (seu código já fazia isso, ótimo!)
     const c = await client.query('SELECT id FROM containers WHERE id=$1', [containerId]);
     if (c.rowCount === 0) {
       await client.query('ROLLBACK');
       return res.status(404).json({ error: 'Container não encontrado' });
     }
 
+    // 2. Verifica se o dispositivo existe (seu código já fazia isso, ótimo!)
     const d = await client.query('SELECT id FROM devices WHERE device_id=$1', [deviceId]);
     if (d.rowCount === 0) {
       await client.query('ROLLBACK');
       return res.status(404).json({ error: 'Device não encontrado' });
     }
 
+    // ======================================================================
+    // --- NOSSA NOVA LÓGICA DE ATUALIZAÇÃO ---
+    // 3. Atualiza a tabela 'containers' para registrar a associação permanentemente.
+    await client.query(
+      `UPDATE containers SET iot_device_id = $1 WHERE id = $2`,
+      [deviceId, containerId]
+    );
+    // ======================================================================
+
+    // 4. Cria um evento na tabela de movimentos (seu código já fazia isso)
     await client.query(
       `INSERT INTO container_movements
-         (container_id, event_type, device_id, ts_iso, meta)
+         (container_id, event_type, device_id, ts_iso, meta, source)
        VALUES
-        ($1, 'HEARTBEAT', $2, NOW(), jsonb_build_object('op','attach'))`,
+         ($1, 'DEVICE_ATTACHED', $2, NOW(), jsonb_build_object('op','attach'), 'dashboard')`,
       [containerId, deviceId]
     );
+    
+    // (Opcional) A atualização da tabela 'container_state' já é feita pelo trigger que você criou!
+    // Não precisamos mais das queries que atualizavam o container_state aqui.
 
-    const u = await client.query(
-      `UPDATE container_state
-          SET last_device_id=$2, updated_at=NOW()
-        WHERE container_id=$1`,
-      [containerId, deviceId]
-    );
-
-    if (u.rowCount === 0) {
-      await client.query(
-        `INSERT INTO container_state
-           (container_id, last_event_type, last_device_id, updated_at)
-         VALUES
-           ($1, 'DEVICE_ATTACHED', $2, NOW())`,
-        [containerId, deviceId]
-      );
-    }
-
+    // Confirma todas as operações
     await client.query('COMMIT');
-    return res.status(204).send();
+    return res.status(204).send(); // 204 No Content é uma ótima resposta para sucesso sem corpo
+
   } catch (e) {
     await client.query('ROLLBACK').catch(() => {});
-    console.error(e);
+    // Trata erro de associação duplicada (se outro container já usa esse device)
+    if (e.code === '23505') {
+        return res.status(409).json({ error: 'Este dispositivo IoT já está associado a outro container.' });
+    }
+    logger.error({ err: e }, 'Erro ao anexar dispositivo ao container');
     return res.status(500).json({ error: 'Erro ao anexar device' });
   } finally {
     client.release();
