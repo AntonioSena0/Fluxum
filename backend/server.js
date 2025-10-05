@@ -17,6 +17,7 @@ const { pool } = require("./database/db");
 const path = require('path');
 const reportsRoutes = require("./routes/reports.routes");
 
+const v1Transfers = require("./routes/transfers.routes");
 const authRoutes = require("./routes/auth.routes");
 const usersRoutes = require("./routes/users.routes");
 const statsRoutes = require("./routes/stats.routes");
@@ -163,6 +164,7 @@ app.use("/api", statsRoutes);
 app.use("/api", containerEventsRoutes);
 
 app.use("/api/v1", v1Ships);
+app.use("/api/v1", v1Transfers);
 app.use("/api/v1", v1Voyages);
 app.use("/api/v1", v1Containers);
 app.use("/api/v1", v1Devices);
