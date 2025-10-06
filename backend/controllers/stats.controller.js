@@ -50,3 +50,63 @@ exports.listWithVoyage = async (_req, res) => {
   `);
   res.json(r.rows);
 };
+
+
+exports.ingestTemp = async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const account_id = req.account_id; 
+    const body = req.body || {};
+
+    const container_id = String(body.container_id || '').trim();
+    if (!container_id) return res.status(400).json({ error: 'container_id é obrigatório' });
+
+    
+    const ship_id = Number(body.ship_id) || null;
+    const temp_c = (body.temp_c === 0 || body.temp_c) ? Number(body.temp_c) : null;
+    const ts_iso = body.ts_iso ? new Date(body.ts_iso).toISOString() : new Date().toISOString();
+
+    
+    await client.query('BEGIN');
+
+    
+    let imo = null;
+    if (Number.isFinite(ship_id)) {
+      const r = await client.query(
+        `SELECT imo FROM public.ships WHERE account_id=$1 AND ship_id=$2 LIMIT 1`,
+        [account_id, ship_id]
+      );
+      if (r.rowCount > 0) imo = r.rows[0].imo || null;
+    }
+
+    
+    await client.query(
+      `INSERT INTO public.container_movements
+         (container_id, event_type, ts_iso, temp_c, imo)
+       VALUES ($1, 'HEARTBEAT', $2::timestamptz, $3, $4)`,
+      [container_id, ts_iso, temp_c, imo]
+    );
+
+    
+    await client.query(
+      `INSERT INTO public.container_state
+         (container_id, last_event_type, last_ts_iso, last_temp_c, updated_at)
+       VALUES ($1, 'HEARTBEAT', $2::timestamptz, $3, now())
+       ON CONFLICT (container_id) DO UPDATE SET
+         last_event_type = EXCLUDED.last_event_type,
+         last_ts_iso     = EXCLUDED.last_ts_iso,
+         last_temp_c     = EXCLUDED.last_temp_c,
+         updated_at      = now()`,
+      [container_id, ts_iso, temp_c]
+    );
+
+    await client.query('COMMIT');
+    return res.status(201).json({ ok: true, container_id, temp_c, ts_iso });
+  } catch (e) {
+    await pool.query('ROLLBACK');
+    console.error('[stats.ingestTemp] error:', e);
+    return res.status(500).json({ error: 'Falha ao ingerir temperatura' });
+  } finally {
+    client.release();
+  }
+};
