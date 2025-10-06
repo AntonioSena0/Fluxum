@@ -20,28 +20,26 @@ exports.create = async (req, res) => {
     const account_id = req.account_id;
     const body = req.body || {};
 
-   
     const rawId = String(body.id || body.container_id || '').trim();
     if (!rawId) {
       return res.status(400).json({ error: 'Campo "id" (container_id) é obrigatório.' });
     }
-
-    
     const id = normalizeContainerId(rawId);
-
-    
     if (!isContainerId(id)) {
       return res.status(400).json({
         error: 'container_id inválido. Use o formato ISO 6346: 4 letras + 7 dígitos (ex.: MSCU1234567).'
       });
     }
 
-    
     const imo  = body.imo ? String(body.imo).trim() : '';
     let owner  = body.owner ? String(body.owner).trim() : null;
     const container_type = body.container_type ? String(body.container_type).trim() : null;
     const description    = body.description ? String(body.description).trim() : null;
     const active         = typeof body.active === 'boolean' ? body.active : true;
+
+    // 🔢 tratar min/max
+    const min_temp = (body.min_temp === "" || body.min_temp == null) ? null : Number(body.min_temp);
+    const max_temp = (body.max_temp === "" || body.max_temp == null) ? null : Number(body.max_temp);
 
     if (!imo) {
       return res.status(400).json({ error: 'Campo "imo" é obrigatório.' });
@@ -49,7 +47,6 @@ exports.create = async (req, res) => {
 
     if (!owner) owner = deriveOwnerFromContainerId(id);
 
-    // 5) FK: ship precisa existir para (account_id, imo)
     const ship = await client.query(
       `SELECT ship_id FROM public.ships WHERE account_id=$1 AND imo=$2 LIMIT 1`,
       [account_id, imo]
@@ -58,20 +55,23 @@ exports.create = async (req, res) => {
       return res.status(400).json({ error: 'Não existe navio com esse IMO nesta conta.' });
     }
 
-    // 6) upsert por PK (id)
-   const q = await client.query(
-     `INSERT INTO public.containers (id, account_id, imo, container_type, owner, description, active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+    
+    const q = await client.query(
+      `INSERT INTO public.containers
+         (id, account_id, imo, container_type, owner, description, active, min_temp, max_temp)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        ON CONFLICT (id) DO UPDATE SET
          account_id     = EXCLUDED.account_id,
          imo            = EXCLUDED.imo,
          container_type = COALESCE(EXCLUDED.container_type, containers.container_type),
          owner          = COALESCE(EXCLUDED.owner, containers.owner),
-        description    = COALESCE(EXCLUDED.description, containers.description),
-        active         = EXCLUDED.active
-       RETURNING id, account_id, imo, container_type, owner, description, active, created_at`,
-      [id, account_id, imo, container_type, owner, description, active]
-     );
+         description    = COALESCE(EXCLUDED.description, containers.description),
+         active         = EXCLUDED.active,
+         min_temp       = EXCLUDED.min_temp,
+         max_temp       = EXCLUDED.max_temp
+       RETURNING id, account_id, imo, container_type, owner, description, active, min_temp, max_temp, created_at`,
+      [id, account_id, imo, container_type, owner, description, active, min_temp, max_temp]
+    );
 
     return res.status(201).json(q.rows[0]);
   } catch (e) {
@@ -86,25 +86,48 @@ exports.create = async (req, res) => {
 };
 
 
+
 exports.list = async (req, res) => {
   try {
     const account_id = req.account_id;
     const q = await pool.query(
       `SELECT
-   id,
-   account_id,
-   imo,
-   container_type,
-   owner,
-   description,
-   COALESCE(active, TRUE) AS active,   -- <==
-   min_temp,
-   max_temp,
-   created_at
- FROM public.containers
- WHERE account_id = $1
- ORDER BY created_at DESC
- LIMIT 500`,
+        c.id,
+        c.account_id,
+        c.imo,
+        c.container_type,
+        c.owner,
+        c.description,
+        COALESCE(c.active, TRUE) AS active,
+        c.min_temp,
+        c.max_temp,
+        c.created_at,
+
+       
+        COALESCE(cs.last_temp_c, mv.last_temp_c) AS last_temp_c,
+        COALESCE(cs.last_ts_iso, mv.last_ts_iso) AS last_ts_iso
+
+      FROM public.containers c
+
+     
+      LEFT JOIN public.container_state cs
+        ON cs.container_id = c.id
+
+      
+      LEFT JOIN LATERAL (
+        SELECT
+          cm.temp_c AS last_temp_c,
+          COALESCE(cm.ts_iso, cm.created_at) AS last_ts_iso
+        FROM public.container_movements cm
+        WHERE cm.container_id = c.id
+          AND cm.temp_c IS NOT NULL
+        ORDER BY COALESCE(cm.ts_iso, cm.created_at) DESC
+        LIMIT 1
+      ) mv ON TRUE
+
+      WHERE c.account_id = $1
+      ORDER BY c.created_at DESC
+      LIMIT 500`,
       [account_id]
     );
     return res.json(q.rows);
@@ -123,19 +146,36 @@ exports.getById = async (req, res) => {
 
     const q = await pool.query(
       `SELECT
-   id,
-   account_id,
-   imo,
-   container_type,
-   owner,
-   description,
-   COALESCE(active, TRUE) AS active,   -- <==
-   created_at
- FROM public.containers
- WHERE account_id = $1 AND id = $2
- LIMIT 1`,
+        c.id,
+        c.account_id,
+        c.imo,
+        c.container_type,
+        c.owner,
+        c.description,
+        c.min_temp,              
+        c.max_temp,              
+        COALESCE(c.active, TRUE) AS active,
+        c.created_at,
+        COALESCE(cs.last_temp_c, mv.last_temp_c) AS last_temp_c,
+        COALESCE(cs.last_ts_iso, mv.last_ts_iso) AS last_ts_iso
+      FROM public.containers c
+      LEFT JOIN public.container_state cs
+        ON cs.container_id = c.id
+      LEFT JOIN LATERAL (
+        SELECT
+          cm.temp_c AS last_temp_c,
+          COALESCE(cm.ts_iso, cm.created_at) AS last_ts_iso
+        FROM public.container_movements cm
+        WHERE cm.container_id = c.id
+          AND cm.temp_c IS NOT NULL
+        ORDER BY COALESCE(cm.ts_iso, cm.created_at) DESC
+        LIMIT 1
+      ) mv ON TRUE
+      WHERE c.account_id = $1 AND c.id = $2
+      LIMIT 1`,
       [account_id, id]
     );
+
     if (q.rowCount === 0) return res.status(404).json({ error: 'Container não encontrado' });
     return res.json(q.rows[0]);
   } catch (e) {
@@ -143,6 +183,7 @@ exports.getById = async (req, res) => {
     return res.status(500).json({ error: 'Erro ao buscar container' });
   }
 };
+
 
 exports.update = async (req, res) => {
   try {
@@ -158,7 +199,14 @@ exports.update = async (req, res) => {
     const description    = body.description ? String(body.description).trim() : null;
     const active         = (typeof body.active === 'boolean') ? body.active : null;
 
-   
+    
+    const min_temp = (body.min_temp === "" || body.min_temp == null)
+      ? null
+      : Number(body.min_temp);
+    const max_temp = (body.max_temp === "" || body.max_temp == null)
+      ? null
+      : Number(body.max_temp);
+
     if (imo) {
       const ship = await pool.query(
         `SELECT 1 FROM public.ships WHERE account_id=$1 AND imo=$2 LIMIT 1`,
@@ -169,19 +217,20 @@ exports.update = async (req, res) => {
       }
     }
 
-   
     if (!owner) owner = deriveOwnerFromContainerId(id);
 
-   const q = await pool.query(
+    const q = await pool.query(
       `UPDATE public.containers
           SET imo            = COALESCE(NULLIF($3,''), imo),
               container_type = COALESCE($4, container_type),
               owner          = COALESCE($5, owner),
               description    = COALESCE($6, description),
-              active         = COALESCE($7, active)
+              active         = COALESCE($7, active),
+              min_temp       = COALESCE($8, min_temp),
+              max_temp       = COALESCE($9, max_temp)
         WHERE account_id = $1 AND id = $2
-        RETURNING id, account_id, imo, container_type, owner, description, active, created_at`,
-      [account_id, id, imo, container_type, owner, description, active]
+        RETURNING id, account_id, imo, container_type, owner, description, active, min_temp, max_temp, created_at`,
+      [account_id, id, imo, container_type, owner, description, active, min_temp, max_temp]
     );
 
     if (q.rowCount === 0) return res.status(404).json({ error: 'Container não encontrado' });
@@ -194,6 +243,7 @@ exports.update = async (req, res) => {
     return res.status(500).json({ error: 'Erro ao atualizar container' });
   }
 };
+
 
 
 

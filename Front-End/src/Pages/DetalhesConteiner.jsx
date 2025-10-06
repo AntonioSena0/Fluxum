@@ -15,37 +15,73 @@ const DetalhesConteiner = () => {
   const [selected, setSelected] = useState(null);
 
 
- async function carregar() {
+async function carregar() {
   setLoading(true);
   try {
     const rows = await apiFetch(`/api/v1/containers`, { auth: true });
-    const mapped = rows.map(r => {
-  const isActive =
-    r.active === true ||
-    r.active === 'true' ||
-    r.active === 't' ||
-    r.active === 1;
-  return {
-    id: r.id,
-    status: isActive ? "Ativo" : "Inativo",
-    navio: r.imo || "-",
-    descricao: r.description || "-",
-    temperatura: r.container_type?.toLowerCase().includes("reef") ? "-" : "N/A",
-  };
-});
+    const mapped = (rows || []).map((r) => {
+      const isActive =
+        r.active === true ||
+        r.active === "true" ||
+        r.active === "t" ||
+        r.active === 1;
+
+      const temperatura =
+        (r.last_temp_c === 0 || (r.last_temp_c !== null && r.last_temp_c !== undefined))
+          ? `${Number(r.last_temp_c).toFixed(1)}° C`
+          : "—";
+
+           const refrigerado = r.min_temp != null || r.max_temp != null;
+
+      return {
+        id: r.id,
+        status: isActive ? "Ativo" : "Inativo",
+        navio: r.imo || "-",          
+        descricao: r.description || "-",
+        temperatura,
+        refrigerado
+      };
+    });
 
     setContainer(mapped);
   } catch (e) {
-    alert(e.message || "Erro ao carregar containers");
+    console.warn("Erro ao carregar containers:", e?.message || e);
+    setContainer([]);
   } finally {
     setLoading(false);
   }
 }
 
 
+
+
+
+
+
   useEffect(() => { carregar(); }, []);
 
-  const filtros = ["A - Z", "Ativos", "Inativos", "Refrigeração"];
+ const [filtroAtual, setFiltroAtual] = useState(null);
+ const filtros = ["A - Z", "Ativos", "Inativos", "Refrigeração"];
+
+const filtrados = React.useMemo(() => {
+  let arr = [...containeres];
+
+  if (filtroAtual === "Ativos") {
+    arr = arr.filter(c => c.status === "Ativo");
+  } else if (filtroAtual === "Inativos") {
+    arr = arr.filter(c => c.status !== "Ativo");
+  } else if (filtroAtual === "Refrigeração") {
+    arr = arr.filter(c => c.refrigerado === true);
+  } else if (filtroAtual === "A - Z") {
+    
+    arr.sort((a, b) =>
+      String(a.id).localeCompare(String(b.id), "pt-BR", { numeric: true, sensitivity: "base" })
+    );
+  }
+
+  return arr;
+}, [containeres, filtroAtual]);
+
 
   return (
     <div className="min-h-screen w-full bg-deletar flex flex-row">
@@ -59,27 +95,44 @@ const DetalhesConteiner = () => {
         <div className="bg-white rounded-3xl p-6 w-full max-w-6xl relative shadow-sm">
 
           <div className="absolute right-6 top-8">
-            <Menu>
-              <MenuButton className="flex items-center gap-4 rounded-[50px] px-6 py-4 text-sm font-medium text-azulEscuro">
-                <img src={ListaIcone} alt="filtro" className="w-4 h-4" />
-                Filtrar
-              </MenuButton>
-              <MenuItems className="absolute right-0 mt-2 w-40 rounded-xl bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-10">
-                {filtros.map((filtro) => (
-                  <MenuItem key={filtro}>
-                    {({ focus }) => (
-                      <button
-                        type="button"
-                        className={`w-full text-left px-4 py-2 text-sm rounded-xl ${focus ? "bg-[#9F9CE8] text-white" : "text-azulEscuro"
-                          }`}
-                      >
-                        {filtro}
-                      </button>
-                    )}
-                  </MenuItem>
-                ))}
-              </MenuItems>
-            </Menu>
+           <Menu>
+  <MenuButton className="flex items-center gap-4 rounded-[50px] px-6 py-4 text-sm font-medium text-azulEscuro">
+    <img src={ListaIcone} alt="filtro" className="w-4 h-4" />
+    {filtroAtual ? `Filtro: ${filtroAtual}` : "Filtrar"}
+  </MenuButton>
+  <MenuItems className="absolute right-0 mt-2 w-48 rounded-xl bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-10 p-1">
+    {filtros.map((filtro) => (
+      <MenuItem key={filtro}>
+        {({ active }) => (
+          <button
+            type="button"
+            onClick={() => setFiltroAtual(filtro)}
+            className={`w-full text-left px-4 py-2 text-sm rounded-xl ${
+              active ? "bg-[#9F9CE8] text-white" : "text-azulEscuro"
+            }`}
+          >
+            {filtro}
+          </button>
+        )}
+      </MenuItem>
+    ))}
+    <div className="my-1 border-t border-black/5" />
+    <MenuItem>
+      {({ active }) => (
+        <button
+          type="button"
+          onClick={() => setFiltroAtual(null)}
+          className={`w-full text-left px-4 py-2 text-sm rounded-xl ${
+            active ? "bg-[#ECF2F9] text-azulEscuro" : "text-azulEscuro/70"
+          }`}
+        >
+          Limpar filtro
+        </button>
+      )}
+    </MenuItem>
+  </MenuItems>
+</Menu>
+
           </div>
 
           {/* Tabela */}
@@ -95,7 +148,7 @@ const DetalhesConteiner = () => {
                 </tr>
               </thead>
               <tbody>
-                {(!loading ? containeres : []).map((c, i) => (
+              {(!loading ? filtrados : []).map((c, i) => (
                   <tr
                     key={c.id}
                     className={`text-sm ${i % 2 === 0 ? "bg-[#ECF2F9]" : "bg-white"
@@ -152,12 +205,14 @@ const DetalhesConteiner = () => {
                   </tr>
                 ))}
 
-                {loading && (
-                  <tr><td className="px-8 py-6 text-sm text-azulEscuro/70" colSpan={6}>Carregando...</td></tr>
-                )}
-                {!loading && containeres.length === 0 && (
-                  <tr><td className="px-8 py-6 text-sm text-azulEscuro/70" colSpan={6}>Nenhum container cadastrado.</td></tr>
-                )}
+               {loading && (
+    <tr><td className="px-8 py-6 text-sm text-azulEscuro/70" colSpan={6}>Carregando...</td></tr>
+  )}
+  {!loading && filtrados.length === 0 && (
+    <tr><td className="px-8 py-6 text-sm text-azulEscuro/70" colSpan={6}>
+      {filtroAtual ? "Nenhum contêiner corresponde ao filtro." : "Nenhum contêiner cadastrado."}
+    </td></tr>
+  )}
               </tbody>
             </table>
           </div>

@@ -48,6 +48,7 @@ export async function apiFetch(path, opts = {}) {
   let { res, data } = await rawFetch(path, opts);
   if (res.status !== 401) {
     if (!res.ok) throw new Error(data?.error || data?.message || "Erro na requisição");
+    
     return data;
   }
   const r = await fetch(`${API}/api/auth/refresh`, {
@@ -55,6 +56,8 @@ export async function apiFetch(path, opts = {}) {
     credentials: "include",
     headers: { "Content-Type": "application/json" }
   });
+
+  
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j?.accessToken) {
     storage.clear();
@@ -64,6 +67,12 @@ export async function apiFetch(path, opts = {}) {
   ({ res, data } = await rawFetch(path, opts));
   if (!res.ok) throw new Error(data?.error || data?.message || "Erro");
   return data;
+
+
+  
+  
 }
+
+
 
 export const TokenStorage = storage;

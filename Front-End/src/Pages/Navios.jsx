@@ -187,16 +187,19 @@ const Navios = () => {
             </h2>
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
 <button
-                type="button"
-                onClick={
-                  transferindo
-                    ? cancelarTransferencia
-                    : () => navigate("/DetalhesConteiner")
-                }
-                className={`bg-violeta text-white text-[12px] font-regular px-6 py-2 rounded-full hover:bg-roxo duration-300 cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto`}
-              >
-                {transferindo ? "Cancelar" :  "Lista de contâineres"}
-              </button>
+  type="button"
+  disabled={transferindo} 
+  onClick={
+    transferindo
+      ? undefined 
+      : () => navigate("/DetalhesConteiner")
+  }
+  className={`bg-violeta text-white text-[12px] font-regular px-6 py-2 rounded-full hover:bg-roxo duration-300 cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto
+    ${transferindo ? "opacity-50 cursor-not-allowed" : ""}`}
+>
+  Lista de contâineres
+</button>
+
 
 
               <button

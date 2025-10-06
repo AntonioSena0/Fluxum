@@ -9,7 +9,7 @@ import { apiFetch } from "../lib/api";
 const DetalheNavio = () => {
   const navigate = useNavigate();
 
-  // Resolvido: usar um único identificador para o navio (rota :id OU query ?id=)
+  
   const { id: idParam } = useParams();
   const [sp] = useSearchParams();
   const shipId = idParam ?? sp.get("id");
@@ -19,7 +19,7 @@ const DetalheNavio = () => {
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Carrega info do navio
+
   useEffect(() => {
     let live = true;
     (async () => {
@@ -36,7 +36,7 @@ const DetalheNavio = () => {
     return () => { live = false; };
   }, [shipId]);
 
-  // Carrega containers do navio
+  
   useEffect(() => {
     (async () => {
       try {
@@ -242,7 +242,6 @@ const DetalheNavio = () => {
       </h3>
       <div className="space-y-2 text-sm">
         <div><span className="font-semibold">IMO:</span> {selected.imo || "—"}</div>
-        <div><span className="font-semibold">Status:</span> {selected.status || "—"}</div>
         <div><span className="font-semibold">Descrição:</span> {selected.description || "—"}</div>
         <div><span className="font-semibold">Tipo:</span> {selected.container_type || "—"}</div>
       </div>
