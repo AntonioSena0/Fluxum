@@ -54,7 +54,7 @@ const Sidebar2 = () => {
 
     const onUpd = (e) => {
       const url = e.detail?.url;
-      setAvatar(url ? toAbsolute(url) : FotoDefault);
+      setAvatar(url ? `${toAbsolute(url)}?t=${Date.now()}` : FotoDefault);
     };
     window.addEventListener("avatar:updated", onUpd);
 
@@ -143,7 +143,7 @@ const Sidebar2 = () => {
           </Link>
 
           <Link
-            to="/Mapa"
+            to="/Viagens"
             component={RouterLink}
             underline="none"
             onMouseEnter={() => setHovered({ ...hovered, mapa: true })}
@@ -151,7 +151,7 @@ const Sidebar2 = () => {
             className={`
               py-3 flex w-16 mx-auto rounded-[18px] justify-center items-center
               max-[760px]:w-10 max-[760px]:h-10 max-[760px]:rounded-[10px] max-[760px]:py-2
-              ${isActive("/Mapa")
+              ${isActive("/Viagens")
                 ? "bg-violeta cursor-default"
                 : "hover:bg-violeta/70 cursor-pointer duration-300"
               }

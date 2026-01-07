@@ -1,3 +1,5 @@
+
+
 require('dotenv').config();
 
 console.log('🔧 Variáveis carregadas:');
@@ -6,7 +8,7 @@ console.log('  DATABASE_URL:', process.env.DATABASE_URL ? '✅' : '❌');
 console.log('  JWT_ACCESS_SECRET:', process.env.JWT_ACCESS_SECRET ? '✅' : '❌');
 
 const express = require("express");
-const dotenv = require("dotenv");
+const dns = require("node:dns/promises");
 const helmet = require("helmet");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -32,11 +34,19 @@ const v1Alerts = require("./routes/alerts.routes");
 const v1Dashboard = require("./routes/dashboard.routes");
 const v1GeoContainers = require("./routes/geo.containers.routes");
 const voyagesMapRouter = require("./routes/voyages_map.routes");
-const maritimeRoutes = require("./routes/maritime.routes.js");
 
+// Força DNS confiável no Node (alguns ISPs 4G falham em domínios .tech)
+try {
+  dns.setServers(["1.1.1.1", "8.8.8.8"]);
+  console.log("🛰️  DNS override ativo: 1.1.1.1, 8.8.8.8");
+} catch (e) {
+  console.warn("Não consegui setar DNS override:", e.message);
+}
 
-
-
+if (!process.env.DATABASE_URL) {
+  console.error("❌ Faltando DATABASE_URL no .env");
+  process.exit(1);
+}
 
 const app = express();
 app.set("trust proxy", 1);
@@ -47,12 +57,16 @@ const FRONTEND_URLS = (process.env.FRONTEND_URL || "http://localhost:5173")
   .filter(Boolean);
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+const allowlist = (process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
+
 app.use(cors({
-  origin: (process.env.CORS_ORIGINS?.split(",") || ["http://localhost:5173"]),
-  credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization"], 
+  origin: ["http://localhost:5173"],
+  credentials: true,                   
+  allowedHeaders: ["Content-Type","Authorization"],
   methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"]
 }));
+
+
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 
@@ -67,12 +81,51 @@ app.use(speed);
 metricsRoute(app);
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
+async function waitDns(host, tries=5){
+  for (let i=1;i<=tries;i++){
+    try { await dns.lookup(host); return true; }
+    catch(e){ await new Promise(r=>setTimeout(r, i*1000)); }
+  }
+  return false;
+}
+
+let DB_HOST;
+try {
+  DB_HOST = new URL(process.env.DATABASE_URL).host;
+} catch (e) {
+  console.error("DATABASE_URL inválida:", e.message);
+  process.exit(1);
+}
+
+async function waitDns(host, tries = 5) {
+  for (let i = 1; i <= tries; i++) {
+    try {
+      // resolve4 respeita dns.setServers – melhor p/ teste
+      await dns.resolve4(host);
+      return true;
+    } catch (_e) {
+      await new Promise((r) => setTimeout(r, i * 1000));
+    }
+  }
+  return false;
+}
+
+
+async function safeCall(fn, label){
+  try { return await fn(); }
+  catch(e){
+    if (e?.code === "ENOTFOUND") console.warn(label, "DNS falhou; vou tentar de novo depois.");
+    else console.error(label, e);
+  }
+}
+
 async function fetchContainersFC() {
-  const { rows } = await pool.query(`
-   WITH latest AS (
+ const { rows } = await pool.query(`
+    WITH latest AS (
   SELECT DISTINCT ON (cm.container_id)
     cm.container_id,
     cm.voyage_code,
+    cm.voyage_id,
     cm.imo,
     CASE WHEN trim(cm.lat::text) ~ '^-?\d+(\.\d+)?$' THEN cm.lat::float8 ELSE NULL END AS lat,
     CASE WHEN trim(cm.lng::text) ~ '^-?\d+(\.\d+)?$' THEN cm.lng::float8 ELSE NULL END AS lng,
@@ -90,12 +143,13 @@ async function fetchContainersFC() {
              cm.created_at
            ) DESC
 )
-SELECT *
-FROM latest
-WHERE lat IS NOT NULL AND lng IS NOT NULL
-ORDER BY ts_iso DESC
-LIMIT 5000;
-
+SELECT l.*
+  FROM latest l
+  LEFT JOIN voyages v ON v.voyage_id = l.voyage_id
+ WHERE l.lat IS NOT NULL AND l.lng IS NOT NULL
+   AND (v.voyage_id IS NULL OR v.status NOT IN ('COMPLETED','ARRIVED'))
+ ORDER BY l.ts_iso DESC
+ LIMIT 5000;
   `);
 
   return {
@@ -137,9 +191,12 @@ agg AS (
   WHERE lat IS NOT NULL AND lng IS NOT NULL
   GROUP BY voyage_code
 )
-SELECT * FROM agg
-ORDER BY ts_iso DESC;
-
+SELECT a.*, v.voyage_id, v.status, s.imo, s.name
+      FROM agg a
+      JOIN voyages v ON v.voyage_code = a.voyage_code
+      JOIN ships   s ON s.ship_id = v.ship_id
+     WHERE v.status NOT IN ('COMPLETED','ARRIVED')
+     ORDER BY a.ts_iso DESC;
   `);
 
   return {
@@ -149,7 +206,11 @@ ORDER BY ts_iso DESC;
       geometry: { type: "Point", coordinates: [Number(r.lng), Number(r.lat)] },
       properties: {
         ship_key: r.voyage_code,
+        voyage_id: r.voyage_id,
         voyage_code: r.voyage_code,
+        status: r.status,
+        imo: r.imo,
+        name: r.name,
         containers_onboard: r.containers_onboard,
         ts_iso: r.ts_iso
       }
@@ -173,32 +234,14 @@ app.use("/api/v1", v1Telemetry);
 app.use("/api/v1", v1Alerts);
 app.use("/api/v1", v1Dashboard);
 app.use("/api/v1", v1GeoContainers);
-app.use("/api/v1/route", maritimeRoutes);
+app.use("/api/v1", require("./routes/maritime.routes"));
 app.use("/api/v1", voyagesMapRouter);
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use(reportsRoutes);
+app.use('/api/v1', require('./routes/live.routes'));
 
-app.get("/api/v1/live/containers", async (_req, res) => {
-  res.set("Cache-Control", "no-store");   // ← impede 304
-  try {
-    const fc = await fetchContainersFC();
-    res.status(200).json(fc);
-  } catch (e) {
-    console.error("containers/live error:", e);
-    res.status(500).json({ error: "failed to fetch containers" });
-  }
-});
 
-app.get("/api/v1/live/ships", async (_req, res) => {
-  res.set("Cache-Control", "no-store");   // ← impede 304
-  try {
-    const fc = await fetchShipsFC();
-    res.status(200).json(fc);
-  } catch (e) {
-    console.error("ships/live error:", e);
-    res.status(500).json({ error: "failed to fetch ships" });
-  }
-});
+
 
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
@@ -214,7 +257,7 @@ app.use("/api", v1Alias);
 // server.js
 
 async function pruneOldAlerts(days) {
-  const sql = `delete from alerts where created_at < now() - ($1 || '7 days')::interval returning id`;
+  const sql = `delete from alerts where created_at < now() - ($1 || ' days')::interval returning id`;
   try {
     const r = await pool.query(sql, [String(days)]);
     console.log(`[pruneOldAlerts] removed=${r.rowCount} older_than_days=${days}`);
@@ -252,13 +295,15 @@ const wss = new WebSocket.Server({ server, path: "/ws/positions" });
 wss.on("connection", async (ws, req) => {
   console.log("WS client connected:", req.url);
   ws.isAlive = true;
-  ws.on("pong", () => {
-    ws.isAlive = true;
-  });
+  ws.on("pong", () => { ws.isAlive = true; });
+
   try {
-    const [ships, containers] = await Promise.all([fetchShipsFC(), fetchContainersFC()]);
-    ws.send(JSON.stringify({ type: "ships", data: ships }));
-    ws.send(JSON.stringify({ type: "containers", data: containers }));
+    const [ships, containers] = await Promise.all([
+      safeCall(fetchShipsFC, "ws ships first"),
+      safeCall(fetchContainersFC, "ws cont first"),
+    ]);
+    if (ships) ws.send(JSON.stringify({ type: "ships", data: ships }));
+    if (containers) ws.send(JSON.stringify({ type: "containers", data: containers }));
   } catch (e) {
     console.error("ws first send error:", e);
   }
@@ -269,18 +314,16 @@ wss.on("error", (e) => {
 });
 
 setInterval(async () => {
-  let ships = null,
-    containers = null;
-  try {
-    ships = await fetchShipsFC();
-  } catch (e) {
-    console.error("ws ships tick:", e);
+  // Só tenta se o DNS estiver resolvendo o host do Neon (rápido: 2 tentativas)
+  const dnsOk = await waitDns(DB_HOST, 2);
+  if (!dnsOk) {
+    console.warn("tick: DNS ainda indisponível para", DB_HOST);
+    return;
   }
-  try {
-    containers = await fetchContainersFC();
-  } catch (e) {
-    console.error("ws cont tick:", e);
-  }
+
+  const ships = await safeCall(fetchShipsFC, "ws ships tick");
+  const containers = await safeCall(fetchContainersFC, "ws cont tick");
+
   wss.clients.forEach((ws) => {
     if (ws.readyState !== ws.OPEN) return;
     if (ships) ws.send(JSON.stringify({ type: "ships", data: ships }));

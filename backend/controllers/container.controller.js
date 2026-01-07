@@ -87,56 +87,48 @@ exports.create = async (req, res) => {
 
 
 
+// backend/controllers/container.controller.js
+
+// backend/controllers/container.controller.js
+
+// ... (mantenha o create, getById, update...)
+
 exports.list = async (req, res) => {
   try {
     const account_id = req.account_id;
-    const q = await pool.query(
-      `SELECT
-        c.id,
-        c.account_id,
-        c.imo,
-        c.container_type,
-        c.owner,
-        c.description,
-        COALESCE(c.active, TRUE) AS active,
-        c.min_temp,
-        c.max_temp,
-        c.created_at,
+    const { ship_id } = req.query;
 
-       
-        COALESCE(cs.last_temp_c, mv.last_temp_c) AS last_temp_c,
-        COALESCE(cs.last_ts_iso, mv.last_ts_iso) AS last_ts_iso
+    console.log(`[API] Listando containers. Filtro ship_id: ${ship_id || 'NENHUM'}`);
 
-      FROM public.containers c
+    let sql = `
+      SELECT id, account_id, imo, container_type, owner, description, created_at, current_ship_id
+      FROM public.containers
+      WHERE account_id = $1
+    `;
+    
+    const params = [account_id];
 
-     
-      LEFT JOIN public.container_state cs
-        ON cs.container_id = c.id
+    if (ship_id) {
+      sql += ` AND current_ship_id = $${params.length + 1}`;
+      params.push(ship_id);
+    }
 
-      
-      LEFT JOIN LATERAL (
-        SELECT
-          cm.temp_c AS last_temp_c,
-          COALESCE(cm.ts_iso, cm.created_at) AS last_ts_iso
-        FROM public.container_movements cm
-        WHERE cm.container_id = c.id
-          AND cm.temp_c IS NOT NULL
-        ORDER BY COALESCE(cm.ts_iso, cm.created_at) DESC
-        LIMIT 1
-      ) mv ON TRUE
+    sql += ` ORDER BY created_at DESC LIMIT 500`;
 
-      WHERE c.account_id = $1
-      ORDER BY c.created_at DESC
-      LIMIT 500`,
-      [account_id]
-    );
+    // LOG DA QUERY (Para ver se o filtro está sendo aplicado)
+    // console.log("[API] SQL:", sql); 
+    // console.log("[API] Params:", params);
+
+    const q = await pool.query(sql, params);
+    
+    console.log(`[API] Encontrados ${q.rowCount} containers para este filtro.`);
+
     return res.json(q.rows);
   } catch (e) {
     console.error('[containers.list] error:', e);
     return res.status(500).json({ error: 'Erro ao listar containers' });
   }
 };
-
 
 exports.getById = async (req, res) => {
   try {
